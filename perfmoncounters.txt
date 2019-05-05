@@ -1,0 +1,71 @@
+01- Perfmon Performance Report for SQL Server (http://red5guide.com/perfmon_performance_report_for_sql_server.html)
+
+
+The following counters are monitored in this video: 
+
+
+Memory
+	Available Bytes
+	Available MBytes
+	Page Faults/sec
+	Pages/sec
+
+PhysicalDisk
+	% Disk Time
+	Avg. Disk sec/Read
+	Avg. Disk sec/Write
+	Current Disk Queue Length
+	Disk Bytes/sec
+	Disk Transfers/sec
+
+Processor
+	% Privileged Time
+	% Processor Time
+
+SQLServer:Access Methods
+	FreeSpace Scans/sec
+	Full Scans/sec
+
+SQLServer:Buffer Manager
+	Buffer cache hit ration
+	Checkpoint pages/sec
+	Free pages
+	Lazy writes/sec
+	Page life expectancy
+
+SQLServer:General Statistics
+	User Connections
+
+SQLServer:Latches
+	Total Latch Wait Time (ms)
+
+SQLServer:Locks
+	Lock Timeouts/sec
+	Lock Wait Time (ms)
+	Number of Deadlocks/sec
+
+SQLServer:Memory Manager
+	Memory Grants Pending
+	Target Server Memory (KB)
+	Total Server Memory (KB)
+
+SQLServer:SQL Statistics
+	Batch Requests/sec
+	SQL Compilations/sec
+	SQL Re-Compilations/sec
+
+System
+	Context Switches/sec
+	Processor Queue Length
+
+
+
+
+1.Click on Start, then click on Run, type in Perfmon and click OK. Expand Data Collector Sets, right click on User Defined, select New, then select Data Collector Set. Type in a name, for example mycollectorset1, then click the create manually (Advanced) radio button, then click the Next button.
+2.Make sure that Create data logs is selected, and check the Performance counter checkbox, then click Next button.
+3.Click the Add button, and find the counters in the list that you want to keep track of. Add all the counters above... For example, to add Available Bytes, expand Memory and click on Available Bytes then click on the Add button. Then click the OK button when you are done adding counters. Now click Next button.
+4.If you want, you can click the Browse button to change where the datacollectorset will be stored...I just leave the default inside %systemdrive%\PerfLogs\Admin\mycollectorset1. Then click Next button, and then click Finish button.
+5.Expand Data Collector Sets, and find your new collector set in the list, right click on it, and select Start. And now it will say Running. Leave it run for awhile so it can collect data about the counters. Then to stop it, right click on the collector set, and select Stop.
+6.Go to the directory where the collector set was saved, for example %systemdrive%\PerfLogs\Admin\mycollectorset1 and double click on the mycollectorset1.blg file. Then click on each one of the properties of the counters, for example Page Faults/sec, and it will tell the Average, Minimum, and Maximum values for each counter property.
+7.Click on the icon Change graph type icon at the top of the graph, and select Report. 
+

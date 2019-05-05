@@ -1,0 +1,177 @@
+
+
+--Check if the master key already present. 
+USE Master
+go
+select * from sys.symmetric_keys
+
+-- Verify that the endpoint is properly configured and is in state "STARTED"
+ 
+select * from sys.database_mirroring_endpoints
+ 
+-- First set the principal server as partner on the mirror database
+ 
+ALTER DATABASE <User Database> SET PARTNER = 'TCP://<FQDN of the Principal Server>:7022'
+ 
+ 
+
+-- Now set the Mirror server as partner on the principal database
+ 
+ALTER DATABASE <User Database> SET PARTNER = 'TCP://<FQDN of the Mirror Server>:7023'
+ 
+
+
+
+CREATE ENDPOINT [Mirroring] 
+AS TCP (LISTENER_PORT = 5022)
+FOR DATA_MIRRORING (ROLE = PARTNER, ENCRYPTION = ENABLED);
+
+
+
+
+
+CREATE ENDPOINT [Mirroring] 
+AS TCP (LISTENER_PORT = 5022)
+FOR DATA_MIRRORING (ROLE = WITNESS, ENCRYPTION = ENABLED);
+
+
+
+ALTER ENDPOINT [Mirroring] STATE = STARTED;
+
+
+-- Set the safety level from the principal server
+ALTER DATABASE [AdventureWorks] SET SAFETY FULL;
+
+
+
+--.You can adjust the timeout value for determining partner outage, using the TIMEOUT parameter to ALTER DATABASE
+-- Issue from the principal server
+ALTER DATABASE [AdventureWorks] SET PARTNER TIMEOUT 20;
+
+
+-- The following query will set the redo queue to 100 megabytes on the mirror:
+
+-- Issue from the principal server
+ALTER DATABASE [AdventureWorks] SET PARTNER REDO_QUEUE 100MB;
+
+
+The following query returns the descriptions for basic database mirroring session information about either the principal or the mirror.
+
+SELECT 
+      DB_NAME(database_id) AS 'DatabaseName'
+    , mirroring_role_desc 
+    , mirroring_safety_level_desc
+    , mirroring_state_desc
+    , mirroring_safety_sequence
+    , mirroring_role_sequence
+    , mirroring_partner_instance
+    , mirroring_witness_name
+    , mirroring_witness_state_desc
+    , mirroring_failover_lsn
+FROM sys.database_mirroring
+WHERE mirroring_guid IS NOT NULL;
+
+
+The following is an analogous query returns relevant descriptive session information about the witness server that you run on the witness.
+
+SELECT 
+      Database_name
+    , safety_level_desc
+    , safety_sequence_number
+    , role_sequence_number
+    , is_suspended
+    , is_suspended_sequence_number
+    , principal_server_name
+    , mirror_server_name
+FROM sys.database_mirroring_witnesses;
+
+Query the catalog view sys.database_mirroring_endpoints to find useful information regarding the endpoints
+
+
+SELECT e.name, 
+e.protocol_desc,
+e.type_desc, 
+e.role_desc, 
+e.state_desc, 		       
+t.port, 
+e.is_encryption_enabled, 
+e.encryption_algorithm_desc, 		     
+e.connection_auth_desc 
+FROM   sys.database_mirroring_endpoints e JOIN sys.tcp_endpoints t
+ON     e.endpoint_id = t.endpoint_id 
+
+
+
+You cause a manual failover by invoking the ALTER DATABASE command on the principal server:
+
+ALTER DATABASE AdventureWorks SET PARTNER FAILOVER;
+
+
+You can cause a forced service on the mirror by invoking the ALTER DATABASE command:
+
+ALTER DATABASE AdventureWorks SET PARTNER FORCE_SERVICE_ALLOW_DATA_LOSS;
+
+
+ALTER DATABASE <db_name> SET PARTNER OFF
+
+
+ALTER DATABASE <db_name> SET PARTNER SUSPEND
+
+
+To resume the database mirroring session, execute:
+
+ALTER DATABASE <db_name> SET PARTNER RESUME
+
+
+
+
+
+
+
+
+Monitoring Script
+-----------------------------------------------
+
+
+SELECT (SELECT DB_NAME(5))AS DBName,database_id,mirroring_state_desc,
+mirroring_role_desc,mirroring_partner_name,mirroring_partner_instance
+FROM sys.database_mirroring
+WHERE database_id=5
+
+
+
+
+http://www.mssqltips.com/sqlservertip/2834/how-to-add-a-database-file-to-a-mirrored-sql-server-database/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

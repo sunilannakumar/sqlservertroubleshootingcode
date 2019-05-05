@@ -1,0 +1,94 @@
+
+OSQL -E -S S590053\pathview
+
+OSQL -U sa -P password -S S590053\sqlexpress
+
+
+
+CREATE LOGIN AD03\sunil.k.anna FROM WINDOWS
+
+
+CREATE LOGIN sunilk WITH PASSWORD = 'password@123'
+
+exec sp_addsrvrolemember 'sunilk', 'sysadmin'
+
+
+
+
+
+
+taking backup:-
+--------------
+
+sqlcmd -E -S $(ESCAPE_SQUOTE(SRVR)) -d OSDAT -Q "EXECUTE [dbo].[DatabaseBackup] @Databases = 'USER_DATABASES', @Directory = N'D:\Program Files\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\MSSQL\Backup', @BackupType = 'FULL', @Verify = 'Y', @CleanupTime = 48, @CheckSum = 'Y'" -b
+
+
+OSQL -E -S TESTCTRLM01 
+
+
+
+
+OSQL -S CEMID91\SQLEXPRESS -i "E:\userdatabasebackup.sql" -o "E:\Backups_Expressedition\userdatabasebackup.txt"
+
+
+osql -E -S CEMID91\SQLEXPRESS -i "E:\Backups_Expressedition\userdatabasebackup.sql" -o "E:\Backups_Expressedition\userdatabasebackup.rpt"
+
+
+osql -E -i C:\MyFolder\MyScript.sql -o C:\MyFolder\MyOutput.rpt
+
+
+
+OSQL -E 
+
+
+
+http://www.howtogeek.com/50295/backup-your-sql-server-database-from-the-command-line/
+
+
+
+osql -E -S CEMID91\SQLEXPRESS -i "E:\Backups_Expressedition\userdatabasebackup.sql"
+
+
+osql -S CEMID91\SQLEXPRESS -i "E:\Backups_Expressedition\userdatabasebackup.sql"
+
+
+
+osql -U dailybackup -P dailybackup@123 -S CEMID91\SQLEXPRESS -i "E:\Backups_Expressedition\userdatabasebackup.sql"
+
+
+
+
+
+OSQL -S CEMID91\SQLEXPRESS -U dailybackup -P dailybackup@123 -Q "backup database master to master with init"
+
+
+
+osql -U dailybackup -P dailybackup@123 -S CEMID91\MICROSOFT##SSEE -i "E:\Backup_SSEE\userdatabasebackup.txt"
+
+
+osql -U dailybackup -P dailybackup@123 -S CEMID91\MICROSOFT##SSEE
+backup database master to master with init
+
+
+
+
+
+
+osql -U dailybackup -P dailybackup@123 -S CEMID91\MICROSOFT##SSEE -i "E:\Backup_SSEE\userdatabasebackup.sql" -o "E:\Backup_SSEE\userdatabasebackup.rpt"
+
+
+
+
+osql -U dailybackup -P dailybackup@123 -S CEMID91\MICROSOFT##SSEE -i "E:\Backup_SSEE\userdatabasebackup.txt"
+
+
+
+MICROSOFT##SSEE_sql_backups
+
+
+
+
+
+
+
+

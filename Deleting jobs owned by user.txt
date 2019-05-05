@@ -1,0 +1,35 @@
+USE msdb
+GO
+
+DECLARE @jobs_to_delete AS TABLE
+(id INT IDENTITY, job_name NVARCHAR(1000));
+DECLARE @i AS INT;
+DECLARE @rows AS INT;
+DECLARE @jobname_to_delete AS NVARCHAR(100);
+DECLARE @user_name AS NVARCHAR(100);
+
+/*insert user name below*/
+SET @user_name = N'';
+
+INSERT INTO @jobs_to_delete
+(job_name)
+SELECT sjv.name 
+FROM dbo.sysjobs_view sjv
+JOIN sys.database_principals dp
+ON sjv.owner_sid = dp.sid
+WHERE dp.name = @user_name;
+
+SELECT @rows = COUNT(*) FROM @jobs_to_delete;
+
+SET @i = 1;
+
+WHILE @i <= @rows
+BEGIN
+ SELECT @jobname_to_delete = job_name FROM @jobs_to_delete WHERE id = @i;
+ SET @i = @i + 1;
+ 
+ /* view the commands or delete the jobs */
+ --EXEC sp_delete_job @job_name = @jobname_to_delete;
+ SELECT 'sp_delete_job @job_name ' + @jobname_to_delete;
+END
+

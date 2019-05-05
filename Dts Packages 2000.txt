@@ -1,0 +1,12 @@
+http://www.codeproject.com/Articles/14308/Move-DTS-Package-from-one-MS-SQL-Server-to-another
+
+ADDing DTS packages to exiting SQL SErver in 2000
+-- --
+
+1. search/find .dts packages in the server
+
+2.In the SQL Server Enterprise Manager console tree, right-click Data Transformation Services, and then click Open Package.
+
+3.In the Select File dialog box, click the .dts file you want, and then click Open.
+
+4.If multiple Data Transformation Services (DTS) packages or package versions were saved, the Select Package dialog box appears. Click the package or package version you want to open.

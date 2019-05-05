@@ -1,0 +1,8 @@
+for checking the estimate time of rollback
+------------------------------------
+
+kill 62 with statusonly 
+
+
+
+select * from sys.sysprocesses where spid in (54, 56, 59)

@@ -1,0 +1,46 @@
+SQL Server 2005
+--------------------------------------
+SELECT o.[name], o.[object_id ], c.[object_id ], c.[name], t.[name]
+FROM sys.all_columns c
+INNER JOIN sys.all_objects o
+ON c.object_id = o.object_id
+INNER JOIN sys.types t
+ON c.system_type_id = t.system_type_id 
+WHERE c.system_type_id IN (35, 165, 99, 34, 173)
+AND o.[name] NOT LIKE 'sys%'
+AND o.[name] <> 'dtproperties'
+AND o.[type] = 'U'
+GO
+
+
+SQL Server 2000
+---------------------------------
+
+SELECT o.[name], o.[id], c.[id], c.[name], t.[name]
+FROM dbo.syscolumns c
+INNER JOIN dbo.sysobjects o
+ON c.id = o.id
+INNER JOIN dbo.systypes t
+ON c.xtype = t.xtype
+WHERE c.xtype IN (35, 165, 99, 34, 173)
+AND o.[name] NOT LIKE 'sys%'
+AND o.[name] <> 'dtproperties'
+AND o.xtype = 'U'
+GO
+
+
+SQL Server System Data Type Lookup Values
+---------------------------------------------
+As a point of reference, below outlines the SQL Server system data type lookup values:
+35 - text
+165 - varbinary
+99 - ntext
+34 - image
+173 - binary
+
+
+
+
+
+
+

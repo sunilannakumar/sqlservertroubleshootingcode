@@ -1,0 +1,33 @@
+---Disable All SQL Server Agent Jobs----
+
+
+USE MSDB;
+GO
+UPDATE MSDB.dbo.sysjobs
+SET Enabled = 0
+WHERE Enabled = 1;
+GO
+
+
+
+---Enable All SQL Server Agent Jobs----
+
+
+USE MSDB;
+GO
+UPDATE MSDB.dbo.sysjobs
+SET Enabled = 1
+WHERE Enabled = 0;
+GO
+
+
+----
+
+UPDATE MSDB.dbo.sysjobs
+SET Enabled = 1
+WHERE Name in
+('AssignCrawler',
+'GATEWAY_TRANSFER_HISTORY_RECORDS',
+'Transfer CDA MPAN Requests to CDMS',
+'Transfer CDA Projects To CFS_V5 2',
+'TransferEquipmentRequests 2')

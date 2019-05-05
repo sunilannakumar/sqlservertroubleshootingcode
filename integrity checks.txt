@@ -1,0 +1,1 @@
+sqlcmd -E -S $(ESCAPE_SQUOTE(SRVR)) -d master -Q "EXECUTE [dbo].[DatabaseIntegrityCheck] @Databases = 'USER_DATABASES'" -b

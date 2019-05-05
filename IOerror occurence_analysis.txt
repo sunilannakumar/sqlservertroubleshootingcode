@@ -1,0 +1,21 @@
+create table #IO_ERRORS(LogDate datetime,ProcessInfo varchar(30),text varchar(max))
+ declare @error_msg  varchar(2000) = 'requests taking longer than 15 seconds to complete on file'
+
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 0, 1,@error_msg  , '', NULL, NULL, N'desc'
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 1, 1, @error_msg  , '', NULL, NULL, N'desc'
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 2, 1, @error_msg  , '', NULL, NULL, N'desc'
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 3, 1, @error_msg  , '', NULL, NULL, N'desc'
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 4, 1, @error_msg  , '', NULL, NULL, N'desc'
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 5, 1, @error_msg  , '', NULL, NULL, N'desc'
+ insert into #IO_ERRORS EXEC master.dbo.xp_readerrorlog 6, 1, @error_msg  , '', NULL, NULL, N'desc'
+
+select LogDate,physical_name,--,SUBSTRING(TEXT,CHARINDEX('[S:\MSSQL10.MSSQLSERVER\MSSQL\DATA\',TEXT),CHARINDEX('in database [AccountNow]',TEXT)-CHARINDEX('[S:\MSSQL10.MSSQLSERVER\MSSQL\DATA\',TEXT)) 
+OCCURANCES= cast(SUBSTRING(TEXT,CHARINDEX('SQL Server has encountered ',TEXT)+27,CHARINDEX('occurrence(s) of I/O requests taking longer than ',TEXT)-CHARINDEX('SQL Server has encountered ',TEXT)-27) as int) 
+from #IO_ERRORS a 
+JOIN sys.master_files b on a.text like  '%'+b.physical_name +'%' 
+order by 3 desc
+
+
+
+
+http://www.calsql.com/2013/02/sql-server-io-errors-list.html

@@ -1,0 +1,7 @@
+
+This status of Trace Flags can also be obtained from SQL Server error logs. 
+
+EXEC xp_ReadErrorLog 0, 1, 'DBCC TRACE'
+
+GO
+

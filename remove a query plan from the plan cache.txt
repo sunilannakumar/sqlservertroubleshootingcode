@@ -1,0 +1,22 @@
+find all query plans
+-------------------------
+
+
+select a.plan_handle,query_plan,text,
+execution_count,size_in_bytes,
+creation_time,usecounts,
+last_execution_time,execution_count,
+total_elapsed_time,last_elapsed_time
+from sys.dm_exec_cached_plans a
+inner join sys.dm_exec_query_stats b
+on a.plan_handle=b.plan_handle
+cross apply sys.dm_exec_sql_text(b.sql_handle) as sql_text
+cross apply sys.dm_exec_query_plan(a.plan_handle) as query_plan
+
+
+
+
+remove query plan
+---------------------
+
+DBCC freeproccache(0x06000100A8CEE12640BB20D50200000001000000000000000000000000000000000000000000000000000000)

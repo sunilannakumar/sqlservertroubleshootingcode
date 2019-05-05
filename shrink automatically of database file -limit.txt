@@ -1,0 +1,48 @@
+
+Set nocount on
+if exists (select * from tempdb.sys.all_objects where name like '%#dbsize%')
+drop table #dbsize
+create table #dbsize (dbname sysname,dbsize bigint)
+go
+insert into #dbsize exec sp_msforeachdb 'use [?];
+select DB_NAME() AS DbName,sum(size)/128.0/1024 AS File_Size_MB from sys.database_files'  
+
+If exists (select * from tempdb.sys.all_objects where name like '%#drvsize%')
+drop table #drvsize
+create table #drvsize  (output varchar(50)) 
+
+declare @drv_letter varchar(1), 
+        @SQLtorun VARCHAR(100), 
+        @drv_size varchar(20) 
+        
+select @drv_letter =  substring(filename,1,1) from sys.sysaltfiles where dbid = 2 
+SET    @SQLtorun = 'insert into #drvsize EXEC XP_CMDSHELL ''fsutil volume diskfree ' + @drv_letter + ':''' 
+exec (@SQLtorun) 
+select @drv_size = SUBSTRING(output,32,48) from #drvsize where output like 'Total # of bytes%' 
+select @drv_size = cast(replace(replace(@drv_size, char(13), ''), char(10), '') as bigint) /1024/1024/1024 --GB
+
+----------------------------db Mail-----------
+declare @threshold bigint
+declare @currentDB_size varchar (25)
+declare @MSG varchar (150)
+
+select @currentDB_size= (select dbsize from #dbsize where dbname='tempdb') --MB
+Set @MSG = 'SQL SERVER '+ @@SERVERNAME+ ' Database TempDB size is now above threshold of 80 percent of disk space. Current size of database is '+ @currentDB_size
+
+Set @threshold = (@drv_size)*80/100 --GB
+
+IF @currentDB_size > @threshold
+
+BEGIN 
+
+EXEC msdb.dbo.sp_send_dbmail
+
+@profile_name = 'mayur_Mail',
+
+@recipients = 'mayur@ms.net',
+
+@body = @MSG,
+
+@subject = 'SQL server ABC alert for Tempdb size growth' ;
+
+END

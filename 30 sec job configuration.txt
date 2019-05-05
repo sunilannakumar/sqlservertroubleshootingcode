@@ -1,0 +1,10 @@
+
+
+
+
+exec msdb..sp_update_jobschedule @job_id = 'AE2AD631-BBD5-4195-A0DF-4BE166CA448D',
+@name ='30Seconds_Schedule', @freq_subday_type =0x2, @freq_subday_interval =30
+
+
+
+http://blog.logiclabz.com/sql-server/schedule-sql-server-job-to-run-every-30-seconds.aspx

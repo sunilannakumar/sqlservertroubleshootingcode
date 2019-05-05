@@ -1,0 +1,46 @@
+CREATE PROCEDURE sp_addarticles(@pubname VARCHAR(100), 
+@article VARCHAR(100), 
+@subscriber VARCHAR(100), 
+@sub_db VARCHAR(100), 
+@dest_article VARCHAR(100) = NULL) 
+AS
+BEGIN
+DECLARE @immsync INT
+DECLARE @allowanyon INT
+  
+SELECT @immsync=immediate_sync, @allowanyon=allow_anyonmous FROM syspublications 
+  
+sp_addarticle @publication=@pubname 
+@article=@article 
+@source_table=@article 
+@force_invalidate_snapshot=1 
+GO 
+  
+IF @allowanyon = 1 
+BEGIN
+EXEC sp_changepublication 
+@publication = @pubname, 
+@property = N'allow_anonymous', 
+@value = 'false'
+GO 
+END
+  
+IF @immsync = 1 
+BEGIN
+EXEC sp_changepublication 
+@publication = @pubname, 
+@property = N'immediate_sync', 
+@value = 'false'
+GO 
+END
+  
+EXEC sp_addsubscription 
+@publication = @pubname 
+@article = @article, 
+@subscriber = @subscriber 
+@destination_db = @sub_db 
+@reserved='Internal'
+END
+
+
+Read more: http://sql-articles.com/scripts/adding-article-to-existing-publication-without-generating-a-full-snapshot/#ixzz29eJsDp6M

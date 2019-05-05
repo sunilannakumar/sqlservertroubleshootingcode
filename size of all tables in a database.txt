@@ -1,0 +1,56 @@
+/* Replace <DBName> by the name of actual database */
+
+USE <DBName>
+GO
+
+DECLARE @tableName VARCHAR(1000)
+DECLARE @sch_name VARCHAR(1000)
+CREATE TABLE #AllTables
+  (
+     row_num    INT IDENTITY(1, 1),
+     sch_name VARCHAR(1000),
+     tab_name VARCHAR(1000)
+  )
+
+INSERT INTO #AllTables
+            (sch_name, tab_name)
+SELECT s.name, t.name
+FROM   sys.Tables t inner join sys.schemas s on t.schema_id = s.schema_id
+
+CREATE TABLE #TempTable
+  (
+     tabName  VARCHAR(100),
+     no_rows     VARCHAR(100),
+     reserved   VARCHAR(50),
+     data       VARCHAR(50),
+     index_size VARCHAR(50),
+     unused     VARCHAR(50)
+  )
+
+DECLARE @i INT = 1;
+DECLARE @tableCount INT = (SELECT COUNT(1) FROM   #AllTables )
+
+--Loop to get all tables
+WHILE ( @i <= @tableCount )
+  BEGIN
+      SELECT @tableName = tab_name, @sch_name = sch_name
+      FROM   #AllTables
+      WHERE  row_num = @i;
+
+      --Dump the results of the sp_spaceused query to the temp table
+      INSERT #TempTable
+      EXECUTE ('EXEC sp_spaceused ''' + @sch_name + '.' + @tableName + '''')
+
+      SET @i = @i + 1
+  END;
+
+--Select all records so we can use the reults
+SELECT *
+FROM   #TempTable
+ORDER  BY data DESC
+
+--Final cleanup!
+DROP TABLE #TempTable
+GO
+DROP TABLE #Alltables
+GO

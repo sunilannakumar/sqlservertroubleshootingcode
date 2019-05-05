@@ -1,0 +1,41 @@
+sp_tables
+
+
+use distribution
+go
+select * from MSsubscriber_info
+go
+select * from MSpublisher_databases
+go
+select * from MSsubscriptions
+go
+select * from MSpublications
+
+
+select * from MSarticles
+MSdistribution_agents
+MSdistribution_history
+MSlogreader_agents
+MSlogreader_history
+MSmerge_agents
+MSmerge_history
+MSmerge_subscriptions
+MSpublication_access
+MSpublications
+select * from MSpublisher_databases
+MSqreader_agents
+MSqreader_history
+MSrepl_backup_lsns
+MSrepl_commands
+MSrepl_errors
+MSrepl_identity_range
+MSrepl_originators
+MSrepl_transactions
+MSrepl_version
+MSsnapshot_agents
+MSsnapshot_history
+MSsubscriber_info
+MSsubscriber_schedule
+MSsubscriptions
+MSsync_states
+MSdistribution_status

@@ -1,0 +1,38 @@
+I didn’t know negative spids existed until I found one blocking other processes on my SQL Server 2005 box.  The source of the negative spid (SQL Server Process ID), specifically a spid of -2, was the Microsoft Distributed Transaction Coordinator (MSDTC).  Most applications probably never go through MSDTC, but if you want your application to modify tables in multiple databases as a single transaction, then MSDTC is the developer’s friend because it makes the transaction easy to code.  The trade-off is that a little bit of transaction management resides outside of SQL Server in the MSDTC.  If the application fails to commit or rollback the transaction, the MSDTC transaction becomes orphaned and is assigned a spid -2. 
+
+Getting rid of this database connection is not as easy as issuing a kill for spid -2, but you just need to perform one additional step.   To kill the orphaned transaction: 
+
+1) Use this query to get the UOW (a GUID) of the offending transaction: 
+
+use master 
+
+select distinct req_transactionUOW from syslockinfo 
+
+  
+
+Note:  Ignore the UOW records that are all zeros. “00000000-0000-0000-0000-000000000000” 
+
+2) Use the Kill command, replacing the GUID below with the req_transactionUOW obtained from the query above, to kill the offending transaction:
+
+KILL 'D5499C66-E398-45CA-BF7E-DC9C194B48CF'
+ 
+Repeat for each orphaned transaction.
+
+
+
+
+
+
+use master 
+
+select distinct req_transactionUOW from syslockinfo 
+
+Note:  Ignore the UOW records that are all zeros. “00000000-0000-0000-0000-000000000000” 
+
+
+KILL 'D5499C66-E398-45CA-BF7E-DC9C194B48CF'
+
+
+
+
+http://msdn.microsoft.com/en-us/library/ms173730.aspx

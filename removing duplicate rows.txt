@@ -1,0 +1,3 @@
+SET ROWCOUNT 1 
+delete from Scheme_Notepad where reference = 'DI53555' and entry_no=0
+SET ROWCOUNT 0

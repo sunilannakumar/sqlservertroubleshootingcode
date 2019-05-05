@@ -1,0 +1,50 @@
+USE [distribution] 
+GO
+/****** Object: StoredProcedure [dbo].[usp_latencymonitor] Script Date: 01/20/2010 22:31:24 ******/
+SET ANSI_NULLS ON 
+GO
+SET UOTED_IDENTIFIER ON 
+GO
+create procedure [dbo].[usp_latencymonitor] 
+as
+begin
+--Written by Sugeshkumar Rajendran Dated 01/20/2010
+create table #latency_monitor(pubdb varchar(100),publication varchar(100),subdb varchar(100),distagent varchar(300),distcntrvalue int NULL,logagent varchar(300),logcntrvalue int NULL) 
+insert into #latency_monitor(pubdb,publication,subdb,distagent,logagent) 
+select a.publisher_db,a.publication,a.subscriber_db,  a.name as 'DistAgent',b.name as 'LogreaderAgent' 
+from dbo.MSdistribution_agents a, dbo.MSlogreader_agents b 
+where a.publisher_db=b.publisher_db 
+--select * from #latency_monitor
+declare @distagent varchar(300) 
+declare @logagent varchar(300) 
+declare @distcntr int 
+declare @logcntr int 
+DECLARE replmonitor CURSOR FOR 
+select a.name as 'DistAgent',b.name as 'LogreaderAgent' 
+from dbo.MSdistribution_agents a, dbo.MSlogreader_agents b 
+where a.publisher_db=b.publisher_db 
+OPEN replmonitor 
+FETCH
+NEXT FROM replmonitor into @distagent,@logagent 
+WHILE @@FETCH_STATUS = 0 
+BEGIN
+select @distcntr=cntr_value from sys.dm_os_performance_counters 
+where 
+object_name like '%Replication%' 
+and
+counter_name like '%Latency%' and ltrim(rtrim(instance_name)) = ltrim(rtrim(@distagent)) 
+select @logcntr=cntr_value from sys.dm_os_performance_counters 
+where object_name like '%Replication%' 
+and counter_name like '%Latency%' and ltrim(rtrim(instance_name)) = ltrim(rtrim(@logagent)) 
+update #latency_monitor set logcntrvalue = @logcntr where ltrim(rtrim(logagent)) = ltrim(rtrim(@logagent)) 
+update #latency_monitor set distcntrvalue = @distcntr where ltrim(rtrim(distagent)) = ltrim(rtrim(@distagent)) 
+FETCH
+NEXT FROM replmonitor intO @distagent,@logagent 
+END
+CLOSE replmonitor 
+DEALLOCATE replmonitor 
+select * from #latency_monitor 
+drop table #latency_monitor 
+end
+
+Read more: http://sql-articles.com/scripts/measure-sql-server-replication-latency/#ixzz29eJPAAcY

@@ -1,0 +1,14 @@
+---finding fragmentation for table----
+
+SELECT object_id, index_id, avg_fragmentation_in_percent, page_count 
+FROM sys.dm_db_index_physical_stats(DB_ID('SP10_SP10Search_CrawlStore'), OBJECT_ID('MSSCrawlURL'), NULL, NULL, NULL);
+
+
+Rebuilding all indexes in a table
+-----------------------------
+
+USE AdventureWorks2012;
+GO
+ALTER INDEX ALL ON Production.Product
+REBUILD WITH (FILLFACTOR = 80, SORT_IN_TEMPDB = ON,
+              STATISTICS_NORECOMPUTE = ON);

@@ -1,0 +1,26 @@
+
+SELECT t1.resource_type
+,db_name(resource_database_id) as [database]
+,t1.resource_associated_entity_id as [blk object]
+,t1.request_mode
+,t1.request_session_id
+,(SELECT text FROM sys.dm_exec_requests as r 
+cross apply sys.dm_exec_sql_text(r.sql_handle)
+WHERE r.session_id = t1.request_session_id) as waiter_text
+,t2.blocking_session_id 
+, (SELECT TOP 1 request_mode
+FROM sys.dm_tran_locks t1
+JOIN sys.dm_os_waiting_tasks t2
+ON t1.request_session_id = t2.blocking_session_id
+WHERE request_mode NOT LIKE 'IX%'
+AND resource_type NOT LIKE 'DATABASE'
+AND resource_type NOT LIKE 'METADATA%'
+ORDER BY request_mode desc) AS blocking_lock
+,(SELECT text FROM sys.sysprocesses AS p 
+cross apply sys.dm_exec_sql_text(p.sql_handle)
+WHERE p.spid = t2.blocking_session_id) AS blocker_text
+FROM
+sys.dm_tran_locks as t1,
+sys.dm_os_waiting_tasks as t2
+WHERE
+t1.lock_owner_address = t2.resource_address

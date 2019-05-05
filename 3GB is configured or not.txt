@@ -1,0 +1,10 @@
+IF(SELECT Virtual_Memory_In_Bytes/1024/(2048*1024) FROM Sys.dm_os_Sys_Info) < 1 
+BEGIN
+PRINT '/3GB Switch Not Configured in Boot.Ini (CHECK)'
+END
+ELSE
+BEGIN
+PRINT '/3GB Switch Configured in Boot.Ini'
+END 
+
+

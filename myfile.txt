@@ -1,0 +1,16 @@
+Alwayson-incomplete.ppt
+Backup & Restore Operations.ppt
+Connection Pool leekage.ppt
+Filestreem.ppt
+iis webserver.ppt
+Licensing SQL Serve-1.ppt
+Logshipping.ppt
+NTLM-Kerbers_Browser-Services_protocals.ppt
+NUMA.ppt
+Parameter Sniffing.ppt
+Policy Based Management_incomplete.ppt
+Replication.ppt
+SQL Server 2008.ppt
+SSAS_Memory_usage.ppt
+SSRS_Administration.ppt
+Waitresources.ppt

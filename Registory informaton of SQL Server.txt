@@ -1,0 +1,7 @@
+USE Master
+EXEC xp_regread 'HKEY_LOCAL_MACHINE',
+                'SOFTWARE\Microsoft\MSSQLServer\Setup',
+                'SQLPath'
+
+ 
+

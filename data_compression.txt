@@ -1,0 +1,1 @@
+http://www.mssqltips.com/sqlservertip/1582/implementing-data-compression-in-sql-server-2008/

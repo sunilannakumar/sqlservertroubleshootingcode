@@ -1,0 +1,6 @@
+SELECT TEXT, query_plan, requested_memory_kb,
+granted_memory_kb,used_memory_kb, wait_order
+FROM sys.dm_exec_query_memory_grants MG
+CROSS APPLY sys.dm_exec_sql_text(sql_handle)
+CROSS APPLY sys.dm_exec_query_plan(MG.plan_handle)
+

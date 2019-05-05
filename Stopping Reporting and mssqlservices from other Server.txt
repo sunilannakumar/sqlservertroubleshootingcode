@@ -1,0 +1,11 @@
+sc \\EGRPSQL01 stop "ReportServer"
+
+sc \\EGRPSQL01 stop "mssqlserver"
+
+sc \\EGRPSQL01 Start "mssqlserver"
+
+
+sc \\EGRPSQL01 Start "SQLSERVERAGENT"
+
+
+

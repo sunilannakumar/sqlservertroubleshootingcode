@@ -1,0 +1,13 @@
+
+
+for user Database backups
+------------------
+
+sqlcmd -E -S $(ESCAPE_SQUOTE(SRVR)) -d master -Q "EXECUTE [dbo].[DatabaseBackup] @Databases = 'USER_DATABASES', @Directory = N'U:\SQL Server Backups', @BackupType = 'FULL', @Verify = 'Y', @CleanupTime = 48, @CheckSum = 'Y'" -b
+
+
+________________________________________________________________________________________________
+
+
+
+http://www.howtogeek.com/50295/backup-your-sql-server-database-from-the-command-line/

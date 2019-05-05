@@ -1,0 +1,10 @@
+http://sqlblog.com/blogs/aaron_bertrand/archive/2011/01/14/sql-server-v-next-denali-additional-states-for-error-18456.aspx
+
+
+http://troubleshootingsql.com/2011/12/07/sysdatabases-is-emptyyou-say-whaaat/
+
+
+http://www.sqldbops.com/2010/05/token-based-server-access-validation.html
+
+
+http://sqlblogcasts.com/blogs/simons/archive/2011/02/01/solution-login-failed-for-user-x-reason-token-based-server-access-validation-failed-and-error-18456.aspx

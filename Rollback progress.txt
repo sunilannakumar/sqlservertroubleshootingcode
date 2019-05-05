@@ -1,0 +1,20 @@
+set nocount on
+go 
+select 'SPID = ' + cast(@@spid as varchar) -- what connection is this?
+go
+
+create table test (col1 int identity) -- create a test table
+go
+
+begin tran tran1 -- start a transaction
+
+while (1 = 1)
+begin
+insert test default values
+if scope_identity() > 999999 -- break after inserting 1m rows
+   break
+end
+go
+
+dbcc opentran(0)
+go

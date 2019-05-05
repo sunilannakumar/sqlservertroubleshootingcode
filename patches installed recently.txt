@@ -1,0 +1,1 @@
+wmic qfe > c:\users\supriyaanna\desktop\test.txt

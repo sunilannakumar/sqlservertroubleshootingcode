@@ -1,0 +1,36 @@
+To Set the /3GB Startup Switch in Windows Server 2003
+--------------------------------------------------------------------------------
+
+Right-click My Computer and select Properties. The System Properties dialog box will appear.
+
+Click the Advanced tab.
+
+In the Startup and Recovery area, click Settings. The Startup and Recovery dialog box will appear.
+
+In the System startup area, click Edit. This will open the Windows boot.ini file in Notepad.
+
+In the [Operating Systems] section, add the following switches to the end of the startup line that includes the /fastdetect switch: /3GB
+
+Save the changes and close Notepad.
+
+Click OK two times to close the open dialog boxes, and then restart the computer for the change to take effect.
+
+To Set the /3GB Startup Switch in Windows 2000 Advanced Server or Windows 2000 Datacenter Server
+--------------------------------------------------------------------------------
+
+In Windows Explorer, navigate to the system partition. This is the partition that holds hardware specific Windows files such as Boot.ini and NTLDR.
+
+If you cannot see the Boot.ini file, it could be because the folder options are set to hide protected operating system files. If this is the case, in the Explorer window, click Tools, Folder Options, and then click View. Clear the Hide protected operating system files (Recommended) check box. When prompted, click Yes.
+
+After the Boot.ini file is visible in Explorer, right-click the file, click Open With, and then click Notepad to open the file.
+
+Add the /3GB switch to the end of the line starting with "multi" under the [Operating Systems] section.
+
+Save the changes and close Notepad.
+
+Restart the computer for the change to take effect.
+
+
+
+
+note :- http://technet.microsoft.com/en-us/library/bb124810(v=exchg.65).aspx

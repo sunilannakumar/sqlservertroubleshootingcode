@@ -1,0 +1,5 @@
+DBCC DBINFO ('DatabaseName');
+
+DBCC PAGE
+
+DBCC FILEHEADER (‘DatabaseName’, fileID)

@@ -1,0 +1,4 @@
+http://technet.microsoft.com/en-us/library/aa275765(v=sql.80).aspx
+
+
+http://technet.microsoft.com/en-us/library/aa226330(v=sql.80).aspx

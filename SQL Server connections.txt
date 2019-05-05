@@ -1,0 +1,25 @@
+select a.SESSION_ID, a.CONNECT_TIME, a.NET_TRANSPORT, a.AUTH_SCHEME, b.HOST_NAME,b.PROGRAM_NAME,b.LOGIN_NAME, 
+case b.quoted_identifier when 0 then 'OFF'
+else 'ON' end as "QuotedIdentifierSettings", 
+case b.arithabort when 0 then'OFF'
+else'ON' end as"ARITHABORTSettings", 
+case b.ansi_null_dflt_on when 0 then'OFF'
+else'ON' end as"ANSINULLDEFAULTSettings", 
+case b.ansi_defaults when 0 then'OFF'
+else'ON' end as"ANSIDEFAULTSSettings", 
+case b.ansi_warnings when 0 then'OFF'
+else'ON' end as "ANSIWARNINGSSettings", 
+case b.ansi_padding when 0 then'OFF'
+else'ON' end as"ANSIPADDINGSSettings", 
+case b.ansi_nulls when 0 then'OFF'
+else'ON' end as"ANSINULLSSettings", 
+case b.concat_null_yields_null when 0 then'OFF'
+else'ON' end as"CONCATNULLYIELDSNULLSettings", 
+case b.transaction_isolation_level when 1 then 'ReadUncomitted'
+when 2 then 'ReadCommitted' when 3 then 'Repeatable'
+when 4 then 'Serializable' when 5 then 'Snapshot'
+else 'Unspecified' end as"TransactionalIsolationLevelSettings"
+from sys.dm_exec_connections a, sys.dm_exec_sessions b 
+where a.session_id = b.session_id and a.parent_connection_id is null
+
+

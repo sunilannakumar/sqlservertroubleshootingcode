@@ -1,0 +1,6 @@
+USE master
+GO
+EXEC xp_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Microsoft
+SQL Server\80\Registration','CD_KEY'
+GO
+

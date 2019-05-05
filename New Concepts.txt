@@ -1,0 +1,2 @@
+1. MAXDROP setting to 1.
+2. Isolation level to read committed snapshot on.

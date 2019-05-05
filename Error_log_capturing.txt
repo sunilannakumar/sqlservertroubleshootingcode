@@ -1,0 +1,139 @@
+DECLARE @dStart DateTime 
+	, @dEnd DateTime
+	, @MaxLogFiles Int 
+
+SELECT @dStart = GetDate()-30
+	, @dEnd = GetDate()-0
+	, @MaxLogFiles = 5
+
+--Pulls into #TempLog because an empty log file causes errors in the temp table
+--If there are no records, don't pass the issues onto your #Log table and return the results
+
+IF OBJECT_ID('tempdb..#Log') IS NOT NULL BEGIN
+	DROP TABLE #Log
+END
+
+IF OBJECT_ID('tempdb..#TempLog') IS NOT NULL BEGIN
+	DROP TABLE #TempLog
+END
+
+CREATE TABLE #Log
+(
+	LogDate DateTime
+	, ProcessInfo NVarChar(50)
+	, LogText NVarChar(1000)
+)
+
+CREATE TABLE #TempLog
+(
+	LogDate DateTime
+	, ProcessInfo NVarChar(50)
+	, LogText NVarChar(1000)
+)
+
+DECLARE @Num int
+SELECT @Num = 0
+
+WHILE @Num < @MaxLogFiles BEGIN
+	TRUNCATE TABLE #TempLog 
+
+	INSERT INTO #TempLog 
+	exec xp_readerrorlog @Num, 1, null, null, @dStart, @dEnd
+
+	IF @@ROWCOUNT > 0 BEGIN
+		INSERT INTO #Log 
+		SELECT *
+		FROM #TempLog
+	END ELSE BEGIN
+		SELECT @Num = @MaxLogFiles
+	END
+		
+	SELECT @Num = @Num + 1
+END 
+
+/*
+--Uncomment to trend out a specific message and ignore the rest
+DELETE #Log
+WHERE LogText NOT LIKE 'Login failed for user ''WhatAreYouDoingToMe?!?!?''%'
+--*/
+
+--Ignore most of the log file rollover process
+--Keep "Attempting to cycle" and "The error log has been reinitialized" if you want to confirm it happened and succeeded
+DELETE #Log 
+WHERE LogText LIKE '%(c) Microsoft Corporation%'
+	OR LogText LIKE 'Logging SQL Server messages in file %'
+	OR LogText LIKE 'Authentication mode is MIXED.'
+	OR LogText LIKE 'System Manufacturer: %'
+	OR LogText LIKE 'Server process ID %'
+	OR LogText LIKE 'All rights reserved.'
+	OR LogText LIKE 'Default collation: %'
+	OR LogText LIKE 'The service account is %'
+	OR LogText LIKE 'UTC adjustment: %'
+	OR LogText LIKE '(c) 2005 Microsoft Corporation.'--Should I be ignoring this or fixing it?
+	OR LogText LIKE 'Microsoft SQL Server % on Windows NT %'
+	OR LogText LIKE 'The error log has been reinitialized. See the previous log for older entries.'
+	OR LogText LIKE 'Attempting to cycle error log.%'
+
+--Ignore databases being backed up and integrity checks running, assuming you verify this some other way.
+--I don't want to complain to try to have these removed because I may need that info someday; today isn't that day.
+DELETE #Log
+WHERE LogText LIKE 'Log was backed up%'
+	OR LogText LIKE 'Database differential changes were backed up%'
+	OR LogText LIKE 'Backup database with differential successfully %'
+	OR LogText LIKE 'Backup database successfully %'
+	OR LogText LIKE 'Database backed up%'
+	OR LogText LIKE 'DBCC CHECK% found 0 errors %'
+	OR LogText LIKE 'CHECKDB for database % finished without errors %'
+
+--We all have vendor databases...
+--Ignore the stuff where it keeps making sure the setting is where the setting was.
+DELETE #Log
+WHERE LogText LIKE 'Configuration option % changed from 30 to 30.%'
+	OR LogText LIKE 'Configuration option % changed from 5 to 5.%'
+	OR LogText LIKE 'Setting database option COMPATIBILITY_LEVEL to 100 for database ReportServer%'
+	OR LogText LIKE 'Configuration option ''user options'' changed from 0 to 0. Run the RECONFIGURE statement to install.'
+
+--Now your own custom ones
+--Just be careful.  You'll rarely read logs without this script once you see how easy it is.
+--If you put it on the ignore list, you won't see it again.
+--I have starting and stopping traces on mine, because my monitoring software likes to start and stop them a lot
+----I'm accepting the risk that I won't see other people starting and stopping traces.
+DELETE #Log
+WHERE LogText LIKE 'Know what risk you''re taking on by putting stuff in here'
+	OR LogText LIKE 'You will rarely read logs without this, so you won''t see these ever again'
+	OR LogText LIKE 'DBCC TRACEON 3004,%'
+	OR LogText LIKE 'DBCC TRACEON 3014,%'
+	OR LogText LIKE 'DBCC TRACEON 3604,%'
+	OR LogText LIKE 'DBCC TRACEOFF 3604,%'
+	OR LogText LIKE 'DBCC TRACEON 3605,%'
+	OR LogText LIKE 'Error: %, Severity:%'--They give the english version next
+	OR LogText LIKE 'SQL Trace ID % was started by %'
+	OR LogText LIKE 'SQL Trace stopped.%'
+	OR LogText LIKE 'Changing the status to % for full-text catalog %'
+	OR LogText LIKE 'I/O was resumed on database %'
+	OR LogText LIKE 'I/O is frozen on database %' 
+
+/*
+--When mirroring gives me trouble it lets me know by flooding the logs
+--I uncomment this to see if there were other issues in the middle of all that.
+DELETE #Log 
+WHERE LogText LIKE 'Database mirroring is inactive for database%'
+	OR LogText LIKE 'The mirroring connection to%has timed out%'
+	OR LogText LIKE 'Database mirroring is active with database%'
+--*/
+
+/*
+--This is only useful if you're using the trace flag 1222
+--Only show the line that says 'deadlock-list'.  Remove this if you need to see the deadlock details.
+--Note, only use this when needed.  It will give you a 1 second blind spot for every deadlock found.
+--Why aren't you using extended events anyways?
+DELETE L
+FROM #Log L
+	INNER JOIN #Log L2 ON L.LogDate BETWEEN L2.LogDate AND DateAdd(second, 1, L2.LogDate) AND L.ProcessInfo = L2.ProcessInfo 
+WHERE L2.LogText = 'deadlock-list'
+	AND L.LogText <> 'deadlock-list'
+--*/
+
+SELECT * 
+FROM #Log
+ORDER BY LogDate DESC

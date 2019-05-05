@@ -1,0 +1,7 @@
+http://www.everdyn.com/affinitymask/
+
+
+http://www.sql-server-performance.com/2004/performance-audit-part4/2/
+
+http://www.mssqltips.com/sqlservertip/3040/how-to-hotadd-a-vcpu-to-a-virtual-sql-server/
+

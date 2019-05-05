@@ -1,0 +1,17 @@
+
+use distribution 
+go
+
+
+
+SELECT 
+      mt.entry_time, mt.xact_seqno [XACT NO],
+      COUNT(mr.xact_seqno)  [# Commands]
+
+FROM MSrepl_transactions mt WITH(NOLOCK) 
+JOIN MSrepl_commands mr WITH(NOLOCK) 
+      ON mt.xact_seqno = mr.xact_seqno 
+GROUP BY
+      mt.entry_time, mt.xact_seqno 
+having  count(1)  > 10000
+ORDER BY 1

@@ -1,0 +1,10 @@
+ALTER DATABASE AdventureWorks
+MODIFY FILE (NAME = AdventureWorks_Data, FILENAME = 'D:\SQLData\AdventureWorks_Data.mdf');
+ALTER DATABASE AdventureWorks
+MODIFY FILE (NAME = AdventureWorks_Log, FILENAME = 'D:\SQLData\AdventureWorks_Log.ldf');
+
+
+
+
+/f /T3608
+

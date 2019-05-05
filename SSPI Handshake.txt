@@ -1,0 +1,8 @@
+http://www.allenkinsel.com/archive/2010/06/sql-server-and-sspi-handshake-failed-error-hell/
+
+http://mssqlwiki.com/2013/12/09/sql-server-connectivity-kerberos-authentication-and-sql-server-spn-service-principal-name-for-sql-server/
+
+http://blogs.technet.com/b/mkleef/archive/2008/10/08/setting-an-spn-manually.aspx
+
+
+http://blogs.msdn.com/b/dipanb/archive/2010/12/08/sspi-handshake-failed-could-result-when-the-security-event-log-has-reached-the-maximum-log-size.aspx

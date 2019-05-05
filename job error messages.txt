@@ -1,0 +1,3 @@
+use MSDB
+GO
+select step_name,run_date ,message from sysjobhistory where message like '%failed%' order by run_date desc

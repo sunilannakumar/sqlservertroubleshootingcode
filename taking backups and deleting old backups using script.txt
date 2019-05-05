@@ -1,0 +1,6 @@
+EXECUTE master.dbo.xp_sqlmaint N'-PlanID 3461769D-6D6E-4E72-88D4-BFB23ABE2051 -To "dba" -Rpt "\\gwssdb002\sql backups\BackupReports\SiteStream DB Remote Backup4.txt" -DelTxtRpt 1DAYS -WriteHistory  -VrfyBackup -BkUpMedia DISK -BkUpDB "\\gwssdb002\sql backups" -DelBkUps 2DAYS -CrBkSubDir -BkExt "BAK"'
+
+
+
+
+sqlcmd -E -S $(ESCAPE_SQUOTE(SRVR)) -d master -Q "EXECUTE [dbo].[DatabaseBackup] @Databases = 'USER_DATABASES', @Directory = N'H:\Microsoft SQL Server\MSSQL\Backups', @BackupType = 'FULL', @Verify = 'Y', @CleanupTime = 24, @CheckSum = 'Y'" -b

@@ -1,0 +1,109 @@
+/******Backup Database Size calculation Report..*/
+
+ 
+
+--Note; Calculates the size if the database files are located in D - drive.
+
+ 
+
+select distinct @@servername 'servername', convert(varchar,a.backup_start_date,121) 'Date_time', a.database_name 'DB Name',
+
+convert(decimal(7,2),round(sum(b.file_size/1024/1024),3)) as 'Database Size in(MB)',
+
+s.physical_device_name
+
+into #t1
+
+from  msdb..backupset  a
+
+inner join msdb..backupfile b on a.backup_set_id = b.backup_set_id
+
+left join backupmediafamily s
+
+ 
+
+on a.media_set_id=s.media_set_id
+
+where DATEDIFF(d, backup_start_date, GETDATE()) <= 180
+
+--where     convert(varchar,a.backup_start_date,101) = convert(varchar,getdate(),101)
+
+--and a.database_name in ( select name from sys.databases where database_id  not in(1,2,3,4))
+
+            and s.physical_device_name like 'D:\%'
+
+            and a.type = 'd'
+
+            and b.file_type = 'd' and is_snapshot = 0
+
+            and ISNULL(a.is_damaged, 0) = 0 -- Excludes damaged backups
+
+            --and s.physical_device_name like 'D:\%'
+
+            group by a.backup_set_id, a.database_name, a.backup_start_date, s.physical_device_name
+
+            order by 1--, physical_name
+
+ 
+
+--Lists outs how many databases are backed up . Available in the backupset table in MSDB.
+
+select distinct [db name] from #t1
+
+ 
+
+ 
+
+select   date_time, DATEPART(dd,date_time) as 'Day_of_the_month', datename(month,date_time) 'Month BKP',sum([Database Size in(MB)]) '[DB_Size]',[DB Name]
+
+from #t1
+
+group by date_time,[db name]
+
+order by date_time
+
+ 
+
+-- Lists out the seerver details, date_time of the backups, database details, database bkp file size(in MB), physical location of the bkps'
+
+select * from #t1
+
+ 
+
+select   date_time, datename(month,date_time) 'Month BKP', DATEPART(dd,date_time) as 'Day_of_the_month',sum([Database Size in(MB)]) 'DB_Size', [DB Name]
+
+into #t2
+
+from #t1
+
+group by date_time,[db name]
+
+order by date_time
+
+ 
+
+/*** Provides details of the databases, database DB Size on a specific date, month...****/
+
+select * from #t2
+
+ 
+
+go
+
+ 
+
+/*** Monthwise Total Backup File size .. *******/
+
+select sum(DB_Size) 'Final SUM UP DB Size',[Month BKP]
+
+from #t2
+
+group by [Month BKP]
+
+ 
+
+ 
+
+drop table #t1
+
+drop table #t2

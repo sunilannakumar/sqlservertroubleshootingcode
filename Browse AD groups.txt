@@ -1,0 +1,29 @@
+To see a listing of the members of a group, you will need to run the following command.
+
+
+exec xp_logininfo 'GROUP_NAME', 'members'
+
+
+To see information about an individual simply run this command.
+
+
+exec xp_logininfo 'LOGIN_NAME', 'all'
+
+
+____________________________
+use Master
+go
+
+DECLARE @NTLogin nvarchar(128); 
+SET @NTLogin = 'INP-ANNAS\SQLServer2005MSFTEUser$INP-ANNAS$MSSQLSERVER'
+DECLARE @UserList TABLE (
+	[Account Name] nvarchar(128),
+	[Type] nvarchar(128),
+	[Privilege] nvarchar(128),
+	[Mapped Login Name] nvarchar(128),
+	[Permission Path] nvarchar(128) )
+INSERT INTO @UserList EXEC xp_logininfo @NTLogin, 'all' --insert group information
+IF EXISTS (SELECT NULL FROM @UserList WHERE [Type] = 'group') --only if it's a group
+INSERT INTO @UserList EXEC xp_logininfo @NTLogin, 'members' --insert member information
+SELECT * FROM @UserList
+

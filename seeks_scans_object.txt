@@ -1,0 +1,11 @@
+SELECT   OBJECT_NAME(S.[OBJECT_ID]) AS [OBJECT NAME],  
+         I.[NAME] AS [INDEX NAME],  
+         USER_SEEKS,  
+         USER_SCANS,  
+         USER_LOOKUPS,  
+         USER_UPDATES  
+FROM     sys.dm_db_index_usage_stats AS S  
+         INNER JOIN sys.indexes AS I  
+           ON I.[OBJECT_ID] = S.[OBJECT_ID]  
+              AND I.INDEX_ID = S.INDEX_ID  
+WHERE    OBJECT_NAME(S.[OBJECT_ID]) = 'Address'

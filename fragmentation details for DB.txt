@@ -1,0 +1,23 @@
+-------------------------------------------------------------------------------------------------------------------
+				Fragmentaion for Database
+-------------------------------------------------------------------------------------------------------------------
+Use MISDW
+go 
+SELECT OBJECT_NAME(OBJECT_ID), index_id,index_type_desc,index_level,
+avg_fragmentation_in_percent,avg_page_space_used_in_percent,page_count
+FROM sys.dm_db_index_physical_stats
+(DB_ID('MISDW'), NULL, NULL, NULL , 'SAMPLED')
+ORDER BY avg_fragmentation_in_percent DESC
+-------------------------------------------------------------------------------------------------------------------
+				Fragmentaion for Table
+------------------------------------------------------------------------------------------------------------------- 
+ 
+DECLARE @db_id INT;
+DECLARE @object_id INT;
+SET @db_id = db_id(N'MISDW');
+SET @object_id = OBJECT_ID(N'SubsInvoices');
+BEGIN
+   SELECT *
+   FROM sys.dm_db_index_physical_stats(@db_Id,@object_ID, NULL, NULL , 'DETAILED') AS IPS;
+END
+GO

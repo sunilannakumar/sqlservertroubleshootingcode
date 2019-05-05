@@ -1,0 +1,16 @@
+restore filelistonly from disk='D:\CR63444-11-Jul\CDALIVE_PRODUCTION_110712.bak'
+
+
+restore Headeronly from disk='D:\CR63444-11-Jul\CDALIVE_PRODUCTION_110712.bak'
+
+
+select * from sysaltfiles where dbid=7                                                                                                                                                                                                                                   
+                                                                                                     
+
+sp_helpdb
+
+
+RESTORE DATABASE CDALIVE
+FROM DISK = 'D:\CR63444-11-Jul\CDALIVE_PRODUCTION_110712.bak'
+WITH MOVE 'CDADATARECOVERED_Data' TO 'D:\SQL\Data\CDALIVE.mdf',
+MOVE 'CDADATARECOVERED_Log' TO 'D:\SQL\Data\CDALIVE_log.ldf'

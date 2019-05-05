@@ -1,0 +1,19 @@
+SQL 2005- 
+DBCC TRACEON (1205, 3605, -1)
+
+SQL 2008- 
+dbcc traceon (1204, 3605, -1)
+
+-- SQL 2000 version
+DBCC TRACEON (1204, -1)
+
+-- SQL 2005 version
+DBCC TRACEON (1222, -1)
+Turn off deadlock tracing:
+
+-- SQL 2000 version
+DBCC TRACEOFF (1204, -1)
+
+-- SQL 2005 version
+DBCC TRACEOFF (1222, -1)
+

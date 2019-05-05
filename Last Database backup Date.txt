@@ -1,0 +1,36 @@
+SELECT 
+T1.Name AS DatabaseName, 
+COALESCE(CONVERT(VARCHAR(12), MAX(T2.backup_finish_date), 101),'Not Yet Taken') AS LastBackUpTaken 
+FROM master.sys.databases T1 LEFT OUTER JOIN msdb.dbo.backupset T2 
+ON T2.database_name = T1.name 
+GROUP BY T1.Name 
+ORDER BY T1.Name 
+
+
+________________________________
+
+SELECT   DISTINCT Name = d.name, 
+
+         LastBackup, 
+
+         BackupBy = c.user_name 
+
+FROM     MASTER.dbo.sysdatabases d 
+
+         LEFT JOIN (SELECT   database_name, 
+
+                             LastBackup = max(backup_finish_date) 
+
+                    FROM     msdb.dbo.backupset 
+
+                    WHERE    backup_finish_date <= getdate() 
+
+                    GROUP BY database_name) b 
+
+           ON d.name = b.database_name 
+
+         JOIN msdb.dbo.backupset c 
+
+           ON LastBackup = backup_finish_date 
+
+ORDER BY name

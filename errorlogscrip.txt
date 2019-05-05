@@ -1,0 +1,8 @@
+CREATE TABLE #Errors (lodate varchar(100), processinfo varchar(100),vchMessage varchar(500))
+CREATE INDEX idx_msg ON #Errors(vchMessage)
+INSERT #Errors EXEC Master..xp_readerrorlog 0,1, ‘Error’
+SELECT * FROM #Errors
+DROP TABLE #Errors
+
+
+------------------------------------------------------------------------------------------------

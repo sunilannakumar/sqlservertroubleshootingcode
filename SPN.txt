@@ -1,0 +1,36 @@
+how to find SPN
+
+
+SPN's with TCP and NP enabled on Default Instance:
+
+C:\>setspn -l sqlservice 
+Registered ServicePrincipalNames for CN=SQL Service,OU=Services,DC=dsdnet,DC=local: 
+        MSSQLSvc/ASKJCTP3.dsdnet.local:1433 
+        MSSQLSvc/ASKJCTP3.dsdnet.local
+
+
+SPN's with only NP enabled on Default Instance:
+
+C:\>setspn -l sqlservice 
+Registered ServicePrincipalNames for CN=SQL Service,OU=Services,DC=dsdnet,DC=local: 
+        MSSQLSvc/ASKJCTP3.dsdnet.local
+
+
+SPN's with TCP and NP enabled on Clustered Named Instance:
+C:\>setspn -l sqlservice 
+Registered ServicePrincipalNames for CN=SQL Service,OU=Services,DC=dsdnet,DC=local: 
+        MSSQLSvc/MYSQLCLUSTER.dsdnet.local:54675 
+        MSSQLSvc/MYSQLCLUSTER.dsdnet.local:SQL2K8
+
+
+SPN's with only NP enabled on a Clustered Named Instance:
+
+C:\>setspn -l sqlservice 
+Registered ServicePrincipalNames for CN=SQL Service,OU=Services,DC=dsdnet,DC=local: 
+        MSSQLSvc/MYSQLCLUSTER.dsdnet.local:SQL2K8
+
+
+
+
+
+http://blogs.msdn.com/b/autz_auth_stuff/archive/2011/05/17/system-data-sqlclient-sqlexception-login-failed-for-user-nt-authority-anonymous-login.aspx

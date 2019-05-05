@@ -1,0 +1,12 @@
+2.	Take notes about the instance settings and zip them together with the databases. 
+- pretty much all settings from the instance properties window (right-click on the instance name in SSMS and click Properties)
+- note the current size of tempdb
+- script all sysadmins and securityadmins
+3.	Script linked servers, credentials, endpoints, trigers, replications, database mail, SQL Server logs, SQLAgent logs, default trace files 
+4.	Check if there are other services running (SSIS, SSRS, SSAS) and backup all objects. 
+5.	After all user databases have been detached or deleted, take a note of the location of the system databases for the instance 
+6.	Go to Run –> services.msc and document the settings of the services related to the SQL Server instance and the account names which run the services 
+7.	Stop the SSIS, SSRS and SSAS 
+8.	Go to the folder containing the system databases and copy the files of msdb, master, model and mssqlsystemresource databases to the backup folder, together with all other information from previous points above. 
+9.	Stop the SQL Server service. 
+ 

@@ -1,0 +1,27 @@
+SELECT * FROM sys.dm_server_memory_dumps
+GO
+SELECT * FROM sys.dm_server_services 
+GO
+SELECT * FROM sys.dm_server_registry 
+GO
+SELECT * FROM sys.dm_os_sys_info
+
+SELECT * FROM sys.dm_clr_loaded_assemblies - Assemblies in available in SQL Server
+go
+SELECT * FROM sys.dm_db_file_space_usage - Database file usage to determine if databases are getting low on space and need immediate attention
+go
+ SELECT * FROM sys.dm_exec_cached_plans - Cached query plans available to SQL Server-
+go
+ SELECT * FROM sys.dm_exec_sessions - Sessions in SQL Server-
+go
+ SELECT * FROM sys.dm_exec_connections - Connections to SQL Server-
+go
+ SELECT * FROM sys.dm_db_index_usage_stats - Seeks, scans, lookups per index-
+go
+SELECT * FROM sys.dm_io_virtual_file_stats - IO statistics for databases and log files-
+go
+ SELECT * FROM sys.dm_broker_connections - Service Broker connections to the network-
+go
+ SELECT * FROM sys.dm_os_memory_objects - SQL Server memory usage -
+go
+ SELECT * FROM sys.dm_tran_active_transactions - Transaction state for an instance of SQL Server-

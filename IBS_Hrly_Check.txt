@@ -1,0 +1,164 @@
+USE [master]
+GO
+
+/****** Object:  StoredProcedure [dbo].[DBMonitorProc]    Script Date: 03/13/2013 12:17:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Proc [dbo].[DBMonitorProc]
+as
+SET NOCOUNT ON
+--Declare @BytesUsed Varchar(1000),
+--@BytesFree Varchar(1000),
+--@TotalBytes BIGINT, 
+--@IDENTITY INT,
+--@Drive Char(1),
+--@sql Varchar(1000)
+
+SET NOCOUNT ON
+
+/* --- Find ActiveNode --- */      
+Select 'ServerName/ActiveNode'ActiveNode Union      
+select Convert(Varchar(50),SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) order by ActiveNode      
+ /* --- Find ActiveNode ---*/      
+     
+Select 'Rundate'Rundate Union    
+Select Convert(Varchar(30),GETDATE(),113) Order by Rundate Desc
+
+
+/*----- Disk Utilization ------*/
+If OBJECT_ID('tempdb..#Db_Disk_Size') is not null  
+Drop Table #Db_Disk_Size
+If OBJECT_ID('tempdb..#Volume_Size') is not null  
+Drop Table #Volume_Size
+Create Table #Db_Disk_Size(Id int identity,Drive Char(2),TotalSize Numeric,FreeSize Numeric,PercentageFree Float)
+Insert into #Db_Disk_Size(Drive,FreeSize) Exec xp_fixeddrives
+Create Table #Volume_Size(Id int identity,DriveSize varchar(100))
+Declare @count1 int, @count2 int,@drive Char(1),@stmt varchar(100)
+Declare @Drivesize varchar(50),@Totalsize varchar(50),@len int
+Select @count1=COUNT(*) from #Db_Disk_Size
+Set @count2=1
+While @count2<=@count1
+Begin
+Select @drive=Drive from #Db_Disk_Size where Id=@count2
+print @drive
+Select @stmt='Insert into #Volume_Size(DriveSize) Exec master.dbo.xp_cmdshell ''fsutil volume diskfree '+@drive+':'''
+Exec (@stmt)
+Select @Drivesize=DriveSize from #Volume_Size where Id=2
+Print @Drivesize
+Select @len=LEN(@Drivesize)
+Select @Totalsize=SUBSTRING(@Drivesize,32,(@len-31))
+Update #Db_Disk_Size
+set TotalSize=@Totalsize where Drive=@drive
+Set @Drivesize=''
+Set @len=null
+Set @Totalsize=null
+--Select * from #Volume_Size
+Truncate Table #Volume_Size
+Set @count2=@count2+1
+End
+Select '1Drive' Drive,'TotalSpace(GB)' TotalSpace,'FreeSpace(GB)' FreeSpace,'PercentageFree(GB)' PercentageFree Union
+Select Drive,Convert(Varchar(20),Convert(Decimal(30,2),(TotalSize/1024/1024/1024)))'TotalSize1(GB)',Convert(Varchar(20),Convert(Decimal(30,2),(FreeSize/1024)))'FreeSize(GB)'
+,Convert(Varchar(20),Convert(Decimal(30,2),(((FreeSize/1024)/(TotalSize/1024/1024/1024))*100)))'PercentagFree(GB)' from #Db_Disk_Size
+Order by Drive
+Drop Table #Db_Disk_Size
+Drop Table #Volume_Size
+
+/*----- Disk Utilization ------*/
+
+/*----- Backup Details ------*/
+If OBJECT_ID('tempdb..#Backupdb') is not null
+Drop Table #Backupdb
+
+CREATE TABLE #Backupdb(TempId numeric identity,DBName varchar(255),Full_Backup_Date Datetime,Log_Backup_Date Datetime,FullBackup char(1),LogBackup char(1))
+
+Declare @lid numeric,@lid1 numeric,@lid2 numeric,@DBname varchar(255),@BackupDate Datetime,@Type Char(4),@BackupLocation Varchar(500)
+insert into #Backupdb(DBName)
+Select SD.name from sysdatabases SD where SD.name not in('tempdb')
+Select @lid1=COUNT(*) from #Backupdb
+Set @lid=1
+
+While @lid<=@lid1
+Begin
+Select @DBname=DBName from #Backupdb where TempId=@lid
+
+select top 1 @BackupDate=s1.backup_finish_date,@Type=s1.type,@BackupLocation=f1.physical_device_name 
+from msdb.dbo.backupset s1 inner join msdb.dbo.backupmediafamily f1 on f1.media_set_id=s1.media_set_id 
+where s1.database_name=@DBname and s1.type='D' order by backup_finish_date desc
+Update #Backupdb
+Set Full_Backup_Date=@BackupDate,FullBackup=@Type
+Where DBName=@DBname
+Set @BackupDate=Null
+Set @Type=Null
+Set @BackupLocation=Null
+
+select top 1 @BackupDate=s1.backup_finish_date,@Type=s1.type,@BackupLocation=f1.physical_device_name
+from msdb.dbo.backupset s1 inner join msdb.dbo.backupmediafamily f1 on f1.media_set_id=s1.media_set_id 
+where s1.database_name=@DBname and s1.type='L' order by backup_finish_date desc
+Update #Backupdb
+Set Log_Backup_Date=@BackupDate,LogBackup=@Type
+Where DBName=@DBname
+Set @BackupDate=Null
+Set @Type=Null
+Set @BackupLocation=Null
+
+Set @lid=@lid+1
+End
+
+Select '1DBName' DBName,'Full_Backup_Date' Full_Backup_Date,'Log_Backup_Date' Log_Backup_Date,'RecoveryModel' RecoveryModel Union
+Select Convert(varchar(30),B.DBName)DBName,Convert(varchar(20),B.Full_Backup_Date)Full_Backup_Date,Convert(varchar(20),B.Log_Backup_Date)Log_Backup_Date,Convert(varchar(20),D.recovery_desc) RecoveryModel from #Backupdb B
+inner join (select name,DATABASEPROPERTYEX(name,'recovery')recovery_desc from sysdatabases) D on B.DBName=D.name
+order by DBName
+
+Drop Table #Backupdb
+
+/*----- Backup Details ------*/
+
+/*----- Job Status ------*/
+Select 'JobName' Name, 'Last_Run_Date' Last_Run_Date,'Status'Status Union
+Select SJ.name,Convert(Varchar(20),SS.last_run_date), Case SS.last_run_outcome When 1 then 'Succeed' When 0 then 'Failed' When 3 then 'CAncel' End As Status
+from msdb.dbo.sysjobs SJ, msdb.dbo.sysjobservers SS where SJ.job_id=SS.job_id and SJ.enabled=1 and SS.last_run_outcome<>1 and (SS.last_run_date=CONVERT(varchar(20),GETDATE()-1,112) or 
+SS.last_run_date=CONVERT(varchar(20),GETDATE(),112)) Order by Last_Run_Date Desc
+/*----- Job Status ------*/
+
+/* --- Blocked_User_Process ---*/
+Select 'Blocked_User_Process' Blocked_User_Process,'Blocked' Blocked,'Last_Batch' Last_Batch,'1Command' Command,'LoginName' LoginName Union
+Select Convert(Varchar(30),spid),Convert(Varchar(30),blocked),Convert(Varchar(30),last_batch),Convert(Varchar(30),cmd),Convert(Varchar(30),loginame) 
+from sysprocesses where blocked<>0 and spid<>blocked and waittime>=900000 and spid>=50
+Order by Command
+/* --- Blocked_User_Process ---*/
+
+
+/* --- Blocked_System_Process ---*/
+Select 'Blocked_System_Process' Blocked_User_Process,'Blocked' Blocked,'Last_Batch' Last_Batch,'1Command' Command,'LoginName' LoginName Union
+Select Convert(Varchar(30),spid),Convert(Varchar(30),blocked),Convert(Varchar(30),last_batch),Convert(Varchar(30),cmd),Convert(Varchar(30),loginame) 
+from sysprocesses where blocked<>0 and waittime>=120000 and spid<=50
+Order by Command
+/* --- Blocked_System_Process ---*/
+
+
+/* --- LongRunning_Process ---*/
+Select 'LongRunning_Processes' LongRunning_Processes,'Blocked' Blocked,'Last_Batch' Last_Batch,'1Command' Command,'LoginName' LoginName Union
+Select Convert(Varchar(30),spid),Convert(Varchar(30),blocked),Convert(Varchar(30),last_batch),Convert(Varchar(30),cmd),Convert(Varchar(30),loginame) 
+from sysprocesses where DATEDIFF(HH,last_batch,GETDATE())>=3 and spid>=50 and cmd not like '%AWAITING COMMAND%'
+Order by Command
+/* --- LongRunning_Process ---*/
+
+/*----- DB Log usagae and status ------*/
+If OBJECT_ID('tempdb..#Logusage') is not null
+Drop Table #Logusage
+Create Table #Logusage(DBName varchar(200),Logsize float,SpaceUsed float,status bit)
+insert into #Logusage exec ('dbcc sqlperf(logspace) with no_infomsgs')
+Select 'DBName' DBName,'Logsize(MB)' Logsize ,'SpaceUsed%' SpaceUsed,'Status' status Union
+select convert(varchar(30),D.Name)DBName,Convert(varchar(20),L.Logsize)Logsizein,convert(varchar(20),L.SpaceUsed)SpaceUsed,convert(varchar(20),D.status_desc) status from #Logusage L
+Right outer join (select name,DATABASEPROPERTYEX(name,'status')status_desc from sysdatabases) D on L.DBName=D.name
+order by SpaceUsed desc
+drop table #Logusage
+/*----- DB Log usagae and status ------*/
+
+GO
+
+

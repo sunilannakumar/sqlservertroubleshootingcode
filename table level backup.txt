@@ -1,0 +1,4 @@
+INSERT INTO "table1" ("column1", "column2", ...)
+SELECT "column3", "column4", ...
+FROM "table2"
+

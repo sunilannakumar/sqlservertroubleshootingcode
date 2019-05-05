@@ -1,0 +1,21 @@
+DECLARE @SPID varchar(8000)
+DECLARE @Conntions_Killed smallint
+DECLARE @DBName varchar(100)
+
+SET @SPID = ''
+SET @Conntions_Killed = 0;
+SET @DBName = 'test' -- Pass the Database Name.
+
+SELECT @SPID=coalesce(@spid,',' )+'KILL '+convert(varchar, spid)+ '; '
+FROM MASTER..SYSPROCESSES WHERE dbid=db_id(@DBName);
+
+Print @SPID;
+
+IF LEN(@SPID) > 0
+BEGIN
+EXEC(@SPID);
+
+SELECT @Conntions_Killed = COUNT(1)
+FROM master..sysprocesses WHERE dbid=db_id(@DBName)
+
+END

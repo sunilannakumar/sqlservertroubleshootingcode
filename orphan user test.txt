@@ -1,0 +1,79 @@
+This will lists the orphaned users:
+
+EXEC sp_change_users_login 'Report'
+
+If you already have a login id and password for this user, fix it by doing:
+
+EXEC sp_change_users_login 'Auto_Fix', 'user'
+
+If you want to create a new login id and password for this user, fix it by doing:
+
+EXEC sp_change_users_login 'Auto_Fix', 'user', 'login', 'password'
+
+
+
+
+
+
+
+
+
+
+
+
+
+List Orphan ID’s on all databases
+____________________________________________________________________________
+
+EXEC SP_MSForEachDB 'select ''?'' as DBName, name AS UserName, sid AS UserSID from ?..sysusers 
+where issqluser = 1 and (sid is not null and sid <> 0x0) and suser_sname(sid) is null order by name' 
+
+
+orphaned users from all databases
+------------------------------------
+
+/*************************************************
+** Purpose: To return database users (for each db) orphaned from any login.
+** Created By: James Howard
+** Created On: 03 DEC 09
+*************************************************/
+
+--create a temp table to store the results
+CREATE TABLE #temp (
+DatabaseName NVARCHAR(50),
+UserName NVARCHAR(50)
+)
+
+
+--create statement to run on each database
+declare @sql nvarchar(500)
+SET @sql='select ''?'' as DBName
+, name AS UserName
+from [?]..sysusers
+where (sid is not null and sid <> 0x0)
+and suser_sname(sid) is null and
+(issqlrole <> 1) AND 
+(isapprole <> 1) AND 
+(name <> ''INFORMATION_SCHEMA'') AND 
+(name <> ''guest'') AND 
+(name <> ''sys'') AND 
+(name <> ''dbo'') AND 
+(name <> ''system_function_schema'')
+order by name
+'
+--insert the results from each database to temp table
+INSERT INTO #temp
+exec SP_MSforeachDB @sql
+--return results
+SELECT * FROM #temp
+DROP TABLE #temp
+
+
+
+
+
+
+
+
+
+

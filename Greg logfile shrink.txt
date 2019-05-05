@@ -1,0 +1,30 @@
+USE CDAPMIT 
+GO
+sp_replicationdboption 'CDAPMIT','publish','true'
+GO
+
+EXEC sp_repldone @xactid = NULL, @xact_segno = NULL, @numtrans = 0,    @time = 0, @reset = 1
+GO
+
+sp_replicationdboption 'CDAPMIT','publish','false'
+GO
+
+dbcc traceon(3604)
+
+dbcc opentran 
+
+
+dbcc sqlperf('logspace')
+
+
+removing replication for the database
+-------------------------------------
+
+USE MASTER
+GO
+exec sp_removeDBReplication 'CDMS'
+GO
+exec sp_removeDBReplication 'CDMSRPT'
+GO
+exec sp_removeDBReplication 'GATEWAY'
+GO

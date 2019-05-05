@@ -1,0 +1,57 @@
+sp_tables
+
+
+  
+select * from msdb.dbo.MSdistpublishers   // Snapshot folder location
+
+
+
+
+
+select * from sysarticles
+select * from syspublications
+select * from syssubscriptions
+
+select * from MSmerge_contents
+select * from MSmerge_delete_conflicts
+select * from MSmerge_genhistory
+select * from MSmerge_replinfo
+select * from MSmerge_tombstone
+select * from sysarticleupdates
+select * from sysmergearticles
+select * from sysmergepublications
+select * from sysmergeschemachange
+select * from sysmergesubscriptions
+select * from sysmergesubsetfilters
+
+
+select * from  MSarticles
+select * from  MSdistribution_agents
+select * from MSdistribution_history
+select * from MSlogreader_agents
+select * from MSlogreader_history
+select * from MSmerge_agents
+select * from MSmerge_history
+select * from MSmerge_subscriptions
+select * from MSpublication_access
+select * from MSpublications
+select * from MSpublisher_databases
+select * from MSrepl_commands
+select * from MSrepl_errors
+select * from MSrepl_originators
+select * from MSrepl_transactions
+select * from MSrepl_version
+select * from MSsnapshot_agents
+select * from MSsnapshot_history
+select * from MSsubscriber_info
+select * from MSsubscriber_schedule
+select * from MSsubscriptions
+select * from MSdistribution_status
+
+
+dbPROMIS
+
+PROP-NTSERV
+PROMIS_DATA_LINK
+
+

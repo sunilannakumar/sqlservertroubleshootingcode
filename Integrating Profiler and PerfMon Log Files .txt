@@ -1,0 +1,1 @@
+http://www.sqlteam.com/article/integrating-profiler-and-perfmon-log-files

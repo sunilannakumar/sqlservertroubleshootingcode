@@ -1,0 +1,1 @@
+http://sqlandme.com/2013/07/01/sql-server-how-to-connect-to-sql-server-when-sa-account-is-disabled/

@@ -1,0 +1,138 @@
+_------------------------------
+           SQL Server 2000
+-------------------------------
+----------lock inforation ------
+
+
+SELECT req_spid AS 'spid', 
+DB_NAME(rsc_dbid) AS 'Database', 
+OBJECT_NAME(rsc_objid) AS 'Name', 
+rsc_indid AS 'Index', 
+rsc_text AS 'Description', 
+ResourceType = CASE WHEN rsc_type = 1 THEN 'NULL Resource'
+WHEN rsc_type = 2 THEN 'Database' 
+WHEN rsc_type = 3 THEN 'File'
+WHEN rsc_type = 4 THEN 'Index' 
+WHEN rsc_type = 5 THEN 'Table' 
+WHEN rsc_type = 6 THEN 'Page'
+WHEN rsc_type = 7 THEN 'Key'
+WHEN rsc_type = 8 THEN 'Extent'
+WHEN rsc_type = 9 THEN 'RID (Row ID)'
+WHEN rsc_type = 10 THEN 'Application'
+ELSE 'Unknown'
+END, 
+Status = CASE WHEN req_status = 1 THEN 'Granted' 
+WHEN req_status = 2 THEN 'Converting' 
+WHEN req_status = 3 THEN 'Waiting' 
+ELSE 'Unknown' 
+END, 
+OwnerType = 
+CASE WHEN req_ownertype = 1 THEN 'Transaction' 
+WHEN req_ownertype = 2 THEN 'Cursor' 
+WHEN req_ownertype = 3 THEN 'Session' 
+WHEN req_ownertype = 4 THEN 'ExSession' 
+ELSE 'Unknown' 
+END, 
+LockRequestMode = 
+CASE WHEN req_mode = 0 THEN 'No access ' 
+WHEN req_mode = 1 THEN 'Sch-S (Schema stability)' 
+WHEN req_mode = 2 THEN 'Sch-M (Schema modification)'
+WHEN req_mode = 3 THEN 'S (Shared)' 
+WHEN req_mode = 4 THEN 'U (Update)' 
+WHEN req_mode = 5 THEN 'X (Exclusive)' 
+WHEN req_mode = 6 THEN 'IS (Intent Shared)' 
+WHEN req_mode = 7 THEN 'IU (Intent Update)' 
+WHEN req_mode = 8 THEN 'IX (Intent Exclusive)' 
+WHEN req_mode = 9 THEN 'SIU (Shared Intent Update)'
+WHEN req_mode = 10 THEN 'SIX (Shared Intent Exclusive)'
+WHEN req_mode = 11 THEN 'UIX (Update Intent Exclusive)' 
+WHEN req_mode = 12 THEN 'BU. (Bulk operations)' 
+WHEN req_mode = 13 THEN 'RangeS_S' 
+WHEN req_mode = 14 THEN 'RangeS_U' 
+WHEN req_mode = 15 THEN 'RangeI_N' 
+WHEN req_mode = 16 THEN 'RangeI_S' 
+WHEN req_mode = 17 THEN 'RangeI_U' 
+WHEN req_mode = 18 THEN 'RangeI_X' 
+WHEN req_mode = 19 THEN 'RangeX_S' 
+WHEN req_mode = 20 THEN 'RangeX_U' 
+WHEN req_mode = 21 THEN 'RangeX_X' 
+ELSE 'Unknown' 
+END 
+FROM master.dbo.syslockinfo
+
+
+---------------------------
+
+EXEC master.dbo.sp_lock
+GO
+
+
+_------------------------------
+           SQL Server 2005
+-------------------------------
+
+-- Simple query to return all records and all columns
+SELECT * 
+FROM master.sys.dm_tran_locks;
+GO 
+-- Focused result set
+SELECT resource_type, request_session_id, resource_database_id, resource_associated_entity_id, resource_subtype, resource_description, request_status, request_owner_type, request_mode 
+FROM sys.dm_tran_locks;
+GO
+
+-- Number of lock records per database
+SELECT COUNT(*) AS 'NumberofLockRecords', DB_NAME(resource_database_id) 
+FROM master.sys.dm_tran_locks 
+GROUP BY resource_database_id;
+GO
+
+-- Query for specific lock types
+SELECT resource_type, request_session_id, resource_database_id, resource_associated_entity_id, resource_subtype, resource_description, request_status, request_owner_type, request_mode 
+FROM sys.dm_tran_locks 
+WHERE resource_type IN ('PAGE', 'KEY', 'EXTENT', 'RID');
+GO 
+
+SELECT tl.request_session_id, wt.blocking_session_id, DB_NAME(tl.resource_database_id) AS DatabaseName, tl.resource_type, tl.request_mode, tl.resource_associated_entity_id 
+FROM sys.dm_tran_locks as tl 
+INNER JOIN sys.dm_os_waiting_tasks as wt 
+ON tl.lock_owner_address = wt.resource_address;
+GO
+
+
+
+
+----------------------
+
+
+SELECT  L.request_session_id AS SPID, 
+        DB_NAME(L.resource_database_id) AS DatabaseName,
+        O.Name AS LockedObjectName, 
+        P.object_id AS LockedObjectId, 
+        L.resource_type AS LockedResource, 
+        L.request_mode AS LockType,
+        ST.text AS SqlStatementText,        
+        ES.login_name AS LoginName,
+        ES.host_name AS HostName,
+        TST.is_user_transaction as IsUserTransaction,
+        AT.name as TransactionName,
+        CN.auth_scheme as AuthenticationMethod
+FROM    sys.dm_tran_locks L
+        JOIN sys.partitions P ON P.hobt_id = L.resource_associated_entity_id
+        JOIN sys.objects O ON O.object_id = P.object_id
+        JOIN sys.dm_exec_sessions ES ON ES.session_id = L.request_session_id
+        JOIN sys.dm_tran_session_transactions TST ON ES.session_id = TST.session_id
+        JOIN sys.dm_tran_active_transactions AT ON TST.transaction_id = AT.transaction_id
+        JOIN sys.dm_exec_connections CN ON CN.session_id = ES.session_id
+        CROSS APPLY sys.dm_exec_sql_text(CN.most_recent_sql_handle) AS ST
+WHERE   resource_database_id = db_id()
+ORDER BY L.request_session_id
+
+
+
+
+
+
+
+
+
+

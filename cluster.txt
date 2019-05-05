@@ -1,0 +1,10 @@
+select serverproperty('isclustered')
+
+
+select * from sys.dm_io_cluster_shared_drives
+
+
+select * from sys.dm_os_cluster_nodes
+
+select serverproperty('servername')
+

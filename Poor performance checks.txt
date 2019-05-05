@@ -1,0 +1,70 @@
+    * deadlocks
+    * blocking
+    * missing and unused indexes
+    * I/O bottlenecks
+    * poor query plans
+    * statistics
+    * wait stats
+    * Memory Leaks
+    * fragmentation
+    * log files are full
+    * Disabled jobs for the last 1 week
+
+Note : - An I/O latch wait occurs when a page is accessed for reading or writing but the page is not available in the buffer pool. It causes waits on PAGEIOLATCH_EX or PAGEIOLATCH_SH, depending upon the type of request. These wait types can indicate an I/O bottleneck
+
+
+
+
+
+
+I/O latch wait statistics
+------------------------
+
+Select  wait_type,         waiting_tasks_count,         wait_time_ms  from    sys.dm_os_wait_stats where    wait_type like 'PAGEIOLATCH%'
+order by wait_type
+
+
+
+
+
+
+pending I/O requests and isolating the disks,File and database in which we have I/O Bottleneck
+----------------------------------------------------------------------------------------
+
+
+select     database_id,     file_id,     io_stall,     io_pending_ms_ticks,     scheduler_address from    sys.dm_io_virtual_file_stats(NULL, NULL)t1,         sys.dm_io_pending_io_requests as t2
+where    t1.file_handle = t2.io_handle
+
+
+
+
+
+
+
+
+
+How to  troubleshoot?
+-------------------------
+
+1.  Exclude SQL Server files from antivirus scan.
+
+2. Do not place SQL Server FILES on compressed drives.
+
+3. Distribute SQL Server data files and transaction log files across drives.
+
+4. If the “I/O request taking longer” warning is for tempdb , Enable trace flag 1118 and increase the tempdb data files refer:http://support.microsoft.com/kb/2154845
+
+5. If none of the above resolves the issue collect the below perfmon counters. 
+
+
+
+Avg. Disk sec/Transfer --> Time taken to perform the I/O operation
+Disk Bytes /sec   --> Total read and write to disk per second in bytes.
+Process:IO Data Bytes/Sec --> Total read and write to disk per second in bytes by each process.
+Buffer Manager: Page Read/sec + Page Writes/sec -->Total read and write to disk per second in bytes by SQL Server process.
+
+
+
+
+
+

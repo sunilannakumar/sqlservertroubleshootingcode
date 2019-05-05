@@ -1,0 +1,6 @@
+Use MSDB
+
+go
+
+select top 20 s.database_name ,s.type,s.user_name,s.backup_finish_date ,f.physical_device_name from backupset s inner join backupmediafamily f 
+on s.media_set_id=f.media_set_id where database_name='cdmsrpt' order by s.backup_finish_date desc

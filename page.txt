@@ -1,0 +1,43 @@
+-- List data and index pages allocated to the EMPLOYEE table
+
+use MSDB
+go
+select * from dbo.suspect_pages 
+
+DBCC IND('databasename',EMPLOYEE,-1)
+
+GO
+
+---------------------------------------
+DBCC TRACEON(3604)
+DBCC PAGE('MSSQLTIPS',1,143,3) WITH TABLERESULTS
+GO
+
+(PageFID) = 1
+(PagePID) = 143
+The one I use is print option 3 which dumps both page header information and data. 
+
+trace flag 3604 be set to instruct the engine to send output to the console
+------------------------------------------
+
+Restoration of page 
+----------------------
+
+
+--Restore database  
+
+RESTORE DATABASE CorruptDB PAGE = '1:80' 
+
+FROM DISK = 'D:\Backup\CorruptDB_full.bak' 
+
+WITH NORECOVERY  
+
+ -- Restore log  
+
+ RESTORE LOG CorruptDB  
+
+FROM DISK = 'D:\Backup\CorruptDB_log1.bak' 
+
+WITH NORECOVERY  
+
+

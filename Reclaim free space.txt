@@ -1,0 +1,42 @@
+use database
+go
+sp_spaceused 'main-table'
+
+
+
+
+If it's SQL 2000 or earlier:
+----------------------------
+
+DBCC SHOWCONTIG ('dbo.tblDemoTable') 
+
+you are using SQL 2005:
+-----------------------
+
+
+Declare @object_id int;
+Set @object_id = Object_ID(N'Testbed.dbo.tblDemoTable');
+
+Begin
+Select index_type_desc, index_depth, index_level,
+avg_fragmentation_in_percent, avg_fragment_size_in_pages,
+page_count, avg_page_space_used_in_percent, record_count
+from sys.dm_db_index_physical_stats (Db_id(), @object_id, NULL, NULL , 'Detailed');
+End
+Go
+
+
+
+
+solution:-
+---------------
+
+use database
+go
+sp_spaceused 'main-table'
+go
+DBCC SHOWCONTIG ('dbo.tblDemoTable') 
+go
+DBCC DBREINDEX ( 'dbo.tblDemoTable' )
+go
+DBCC SHOWCONTIG ('dbo.tblDemoTable') 

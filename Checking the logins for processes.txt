@@ -1,0 +1,1 @@
+select spid,dbid,login_time,last_batch,hostname,program_name,hostprocess,cmd,nt_domain,net_address,loginame,net_library from sys.sysprocesses where spid>50 order by login_time desc

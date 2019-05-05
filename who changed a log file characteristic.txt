@@ -1,0 +1,17 @@
+SELECT
+	SUSER_SNAME ([Transaction SID]) AS [User],
+	[Begin Time] AS [Change Time]
+FROM
+	fn_dblog (NULL, NULL)
+WHERE
+	[Transaction ID] =
+		(SELECT
+			[Transaction ID]
+		FROM
+			fn_dblog (NULL, NULL)
+		WHERE
+			[Operation] = N'LOP_MODIFY_ROW'
+			AND [AllocUnitName] = N'sys.sysprufiles.clst'
+			AND [Slot ID] = 1)
+	AND [Operation] = N'LOP_BEGIN_XACT';
+GO

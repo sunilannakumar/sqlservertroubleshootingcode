@@ -1,0 +1,5 @@
+XCOPY G:\backups\CDMS\*.bak  \\10.254.2.94\CEE_WDR_DB_BAK$\CDMS /D
+
+XCOPY C:\PROJECT_X\*.DWG A:\PROJECT_X /D/Y/C/V
+
+G:\backups\CDMS

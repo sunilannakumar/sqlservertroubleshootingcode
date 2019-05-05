@@ -1,0 +1,44 @@
+CREATE LOGIN [Domainname\user] FROM WINDOWS WITH DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE=[us_english]
+go
+declare @user sysname
+set @user = 'Domainname\user'
+
+
+print '--' + @user + ' start to add to databases'
+
+
+DECLARE db_cur Cursor FOR 
+select name from sys.databases (nolock) where name not in ('model','master','tempdb')
+
+
+Open db_cur
+DECLARE @dbname sysname,@cmd varchar(2000)
+
+
+Fetch NEXT FROM db_cur INTO @dbname
+While (@@FETCH_STATUS <> -1)
+BEGIN
+IF (@@FETCH_STATUS <> -2)
+set @cmd = 'USE '+@dbname +' 
+CREATE USER ['+@user+'] FOR LOGIN ['+@user+'] 
+EXEC sp_addrolemember N''db_datareader'', ['+ @user +']'
+--print @cmd
+EXEC (@cmd)
+If @@error >0 print @dbname + 'error
+' + @cmd
+
+
+Fetch NEXT FROM db_cur INTO @dbname
+END
+CLOSE db_cur
+DEALLOCATE db_cur
+GO
+
+
+GRANT VIEW ANY DEFINITION TO [Domainname\user]
+GRANT EXECUTE ON OBJECT::xp_instance_regread TO [Domainname\user]
+
+
+
+
+link :- http://sql1b.blogspot.in/2011/06/grant-read-access-to-all-databases.html

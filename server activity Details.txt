@@ -1,0 +1,24 @@
+SELECT es.session_id
+    ,es.login_time
+    ,es.cpu_time
+ ,es.memory_usage
+    ,es.program_name
+  ,es.host_name
+,er.database_id
+    ,es.login_name
+    ,es.nt_user_name
+    ,es.total_scheduled_time
+    ,es.total_elapsed_time
+    ,es.logical_reads
+    ,es.reads
+    ,es.writes
+    ,st.text
+,ec.protocol_type
+FROM sys.dm_exec_sessions es
+    LEFT JOIN sys.dm_exec_connections ec 
+        ON es.session_id = ec.session_id
+    LEFT JOIN sys.dm_exec_requests er
+        ON es.session_id = er.session_id
+    OUTER APPLY sys.dm_exec_sql_text (er.sql_handle) st
+WHERE es.session_id > 50    -- < 50 system sessions
+ORDER BY es.cpu_time DESC

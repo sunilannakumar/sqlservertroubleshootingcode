@@ -1,0 +1,10 @@
+Step 1:
+
+http://www.mssqltips.com/sqlservertip/2751/find-out-which-sql-server-instance-is-consuming-most-of-the-cpu/
+
+
+Step2 :
+
+http://www.mssqltips.com/sqlservertip/2454/how-to-find-out-how-much-cpu-a-sql-server-process-is-really-using/
+
+

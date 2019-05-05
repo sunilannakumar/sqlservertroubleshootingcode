@@ -1,0 +1,6 @@
+USE master  
+
+2 GO  
+
+3 EXEC xp_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\Setup','ProductCode' 
+

@@ -1,0 +1,9 @@
+DBCC TRACEON (3604);
+ DBCC CONFIG;
+
+cfgupddate = 41023                   cfgupdtime = 14252889
+
+
+
+
+http://www.sqlskills.com/blogs/paul/new-script-when-were-the-sp_configure-options-last-changed/

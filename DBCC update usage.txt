@@ -1,0 +1,13 @@
+DBCC UPDATEUSAGE (Respond, 'ViewDefn')
+DBCC UPDATEUSAGE (Respond, 'ExprGroup')
+DBCC UPDATEUSAGE (Respond, 'FolderPermission')
+
+
+
+example output:
+---------------
+
+
+DBCC UPDATEUSAGE: counts updated for table 'tmpAR_PSX_PRO_ASM_XR' (index 'tmpAR_PSX_PRO_ASM_XR', partition 1):
+        RSVD pages (In-row Data): changed from (-1) to   pages.
+DBCC execution completed. If DBCC printed error messages, contact your system administrator.

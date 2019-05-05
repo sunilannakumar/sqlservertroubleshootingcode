@@ -1,0 +1,1 @@
+http://sqlblog.com/blogs/tibor_karaszi/archive/2009/09/19/sql-server-agent-jobs-and-user-contexts.aspx

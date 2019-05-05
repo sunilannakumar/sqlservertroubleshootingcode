@@ -1,0 +1,32 @@
+select
+	case objtype
+		when 'Proc' then 'Stored procedures'
+		when 'Prepared' then 'Prepared statements'
+		when 'Adhoc' then 'Ad hoc queries'
+		when 'ReplProc' then 'Replication-filter-procedures'
+		when 'Trigger' then 'Triggers'
+		when 'View' then 'Views'
+		when 'Default' then 'Defaults'
+		when 'UsrTab' then 'User tables'
+		when 'SysTab' then 'System tables'
+		when 'Check' then 'CHECK constraints'
+		when 'Rule' then 'Rules'
+	end as cache_type
+	,sum( (case when usecounts = 1 then 1 else 0 end) )
+		as unique_query_plans
+	,count_big(*) as total_query_plans
+	,convert(varchar,cast ( sum((case when usecounts = 1 then 1 else 0 end)) * 1.0
+		/ count_big(*) as money) *100) + ' %' as unique_query_plans_pcnt
+	,cast( sum( (case when usecounts = 1 then size_in_bytes else 0 end) )
+		/1048576.0 as money) as unique_query_plans_mb
+	,cast(sum(size_in_bytes * 1.0)/1048576.0 as money)
+		as total_query_plans_mb
+	,convert(varchar,cast(sum((case when usecounts=1 then size_in_bytes else 0 end))/1048576.0 as money)
+		/
+		cast(sum(size_in_bytes * 1.0)/1048576.0 as money)
+		*100) + ' %' as unique_query_plans_mb_pcnt
+	
+from sys.dm_exec_cached_plans
+group by objtype
+order by
+	cast(sum((case when usecounts = 1 then size_in_bytes else 0 end) )/1048576.0 as money) desc

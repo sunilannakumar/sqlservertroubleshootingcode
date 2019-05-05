@@ -1,0 +1,33 @@
+
+captures information about data conversion occurrences in Query execution plans
+---------------------------------------------------------------------------------
+
+SELECT total_worker_time/execution_count AS [Avg CPU Time],
+query_plan, qs.*, dest.*
+FROM sys.dm_exec_query_stats AS qs
+CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle)
+CROSS APPLY sys.dm_exec_sql_text(plan_handle) as dest
+where cast(query_plan as nvarchar(max)) like ('%CONVERT_IMPLICIT%')
+order by last_execution_time desc
+
+http://blog.btskyrise.com/posts/sql-implicit-conversion
+
+
+captures information about data conversion occurrences in Query execution plans
+---------------------------------------------------------------------------------
+
+SELECT SUBSTRING(qt.TEXT, (qs.statement_start_offset/2)+1,
+    ((CASE qs.statement_end_offset
+    WHEN -1 THEN DATALENGTH(qt.TEXT)
+    ELSE qs.statement_end_offset
+    END - qs.statement_start_offset)/2)+1) AS Query,
+  qs.Execution_count,
+  ROUND(CAST(qs.total_worker_time AS float)/qs.execution_count,0) AS Avg_worker_time,
+  ROUND(CAST(qs.total_elapsed_time AS float)/qs.execution_count,0) AS Avg_elapsed_time
+FROM sys.dm_exec_query_stats qs
+CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) qt
+CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle) qp
+WHERE qt.TEXT like '%TestTable%'
+
+
+https://www.mssqltips.com/sqlservertip/3018/performance-comparison-of-the-sql-server-parse-cast-convert-and-tryparse-trycast-tryconvert-functions/

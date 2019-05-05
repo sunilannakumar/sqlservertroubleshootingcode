@@ -1,0 +1,17 @@
+SELECT  [schema_name] = SCHEMA_NAME(T.[schema_id]),
+        table_name = T.name,        
+        T.type_desc,
+        index_or_statistics_name = S.name,
+        is_auto_stats = S.auto_created,
+        user_created = S.user_created,
+        last_updated = STATS_DATE(T.[object_id], S.stats_id)
+FROM    sys.tables T
+JOIN    sys.stats S
+        ON  S.[object_id] = T.[object_id]
+ORDER   BY
+        T.[schema_id],
+        T.name,
+        S.stats_id;
+
+
+

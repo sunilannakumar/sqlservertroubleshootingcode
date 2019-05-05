@@ -1,0 +1,1 @@
+mofcomp.exe "C:\Program Files (x86)\Microsoft SQL Server\100\Shared\sqlmgmproviderxpsp2up.mof"

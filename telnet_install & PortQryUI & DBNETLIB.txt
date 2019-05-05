@@ -1,0 +1,32 @@
+SQL Server 2000 clients use DBNETLIB to perform to detect the ports
+
+pkgmgr /iu:"TelnetClient"
+
+
+https://www.microsoft.com/en-in/download/details.aspx?id=24009
+
+
+
+https://blogs.msdn.microsoft.com/docast/2014/10/24/tips-and-tricks-to-fix-sql-connectivity-issues/
+
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SQL Server\90\SQL Browser\SSRPListener
+
+
+ Finally, I switched the ODBC source to use the "SQL Native Client" driver instead of the "SQL Server" driver, and that finally DID work
+
+http://serverfault.com/questions/82007/how-do-i-get-this-sql-server-odbc-connection-working
+
+
+https://blogs.msdn.microsoft.com/dataaccesstechnologies/2010/03/03/running-sql-server-default-instance-on-a-non-default-or-non-standard-tcp-port-tips-for-making-application-connectivity-work/
+
+
+Depending on the client data provider (MDAC/SNAC/SqlClient) we may get errors like below (or a variant of these) –
+
+“[DBNETLIB][ConnectionOpen (Connect()).]SQL Server does not exist or access denied.”
+
+“Login timeout expired”
+
+“[Microsoft][SQL Native Client]An error has occurred while establishing a connection to the server. When connecting to SQL Server 2005, this failure may be caused by the fact that under the default settings SQL Server does not allow remote connections”
+
+“A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections”

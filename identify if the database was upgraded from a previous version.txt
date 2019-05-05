@@ -1,0 +1,11 @@
+DBCC TRACEON 	(3604)
+ GO
+
+DBCC PAGE ('Products',1,9,3)
+ GO
+
+DBCC TRACEOFF 	(3604)
+ GO
+
+
+http://www.mytechmantra.com/LearnSQLServer/Identify_Internal_Version_Number_of_a_Database_P1.html

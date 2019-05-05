@@ -1,0 +1,16 @@
+SELECT 
+CONVERT(CHAR(100), SERVERPROPERTY(‘Servername’)) AS Server, 
+bs.database_name, 
+datediff(MINUTE, bs.backup_start_date, bs.backup_finish_date) AS time_taken, 
+CASE bs.type WHEN ‘D’ THEN ‘Database’ WHEN ‘L’ THEN ‘Log’ END AS backup_type, 
+bs.backup_size, 
+bmf.physical_device_name, 
+bs.name AS backupset_name 
+FROM msdb.dbo.backupmediafamily as bmf 
+INNER JOIN msdb.dbo.backupset as bs ON bmf.media_set_id = bs.media_set_id 
+WHERE (CONVERT(datetime, bs.backup_start_date, 102) >= GETDATE() – 7) 
+AND bs.type = ‘D’ 
+/* comment out statement above to report all backups */ 
+ORDER BY 
+bs.database_name, 
+bs.backup_finish_date

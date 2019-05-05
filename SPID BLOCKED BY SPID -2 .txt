@@ -1,0 +1,1 @@
+http://msdn.microsoft.com/en-us/library/aa933230(v=SQL.80).aspx

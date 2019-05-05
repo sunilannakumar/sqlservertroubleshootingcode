@@ -1,0 +1,70 @@
+select @@SERVERNAME
+
+select @@VERSION
+
+Go
+
+SELECT    
+
+      SERVERPROPERTY('IsClustered') as _1_Means_Clustered ,   
+      SERVERPROPERTY('Edition') as Edition ,   
+      SERVERPROPERTY('ProductVersion') as Version  ,       
+      SERVERPROPERTY('ComputerNamePhysicalNetBIOS') as ActiveNode
+
+or
+
+
+SELECT 
+          SERVERPROPERTY('MachineName') as Host,
+          SERVERPROPERTY('InstanceName') as Instance,
+          SERVERPROPERTY('Edition') as Edition, /*shows 32 bit or 64 bit*/
+          SERVERPROPERTY('ProductLevel') as ProductLevel, /* RTM or SP1 etc*/
+          Case SERVERPROPERTY('IsClustered') when 1 then 'CLUSTERED' else
+      'STANDALONE' end as ServerType,
+          @@VERSION as VersionNumber
+
+
+
+-- replicaiton--
+
+SELECT * 
+FROM sys.databases
+WHERE is_published = 1 or is_merge_published = 1 or is_subscribed = 1 or is_distributor= 1
+
+--logshipping--
+
+
+
+select * from log_shipping_plans 
+select * from  log_shipping_plan_databases 
+select * from log_shipping_databases 
+select * from log_shipping_plan_history 
+select * from log_shipping_monitor 
+select * from log_shipping_primaries 
+select * from log_shipping_secondaries
+
+
+
+
+---------------- Server Details-------------
+
+
+SELECT SERVERPROPERTY('Collation')                          Collation,
+              SERVERPROPERTY('Edition')                            Edition,
+              SERVERPROPERTY('Engine Edition')                 EngineEdition,
+              SERVERPROPERTY('InstanceName')                 InstanceName,
+              SERVERPROPERTY('IsClustered')                      IsClustered,
+              SERVERPROPERTY('IsFullTextInstalled')            IsFullTextInstalled,
+              SERVERPROPERTY('IsIntegratedSecurityOnly')   IsIntegratedSecurityOnly,
+              SERVERPROPERTY('IsSingleUser')                    IsSingleUser,
+              SERVERPROPERTY('IsSyncWithBackup')           IsSyncWithBackup,
+              SERVERPROPERTY('LicenseType')                    LicenseType,
+              SERVERPROPERTY('MachineName')                 MachineName,
+              SERVERPROPERTY('NumLicenses')                  NumLicenses,
+              SERVERPROPERTY('ProcessID')                       ProcessID,
+              SERVERPROPERTY('ProductVersion')                ProductVersion,
+              SERVERPROPERTY('ProductLevel')                   ProductLevel,
+              SERVERPROPERTY('ServerName')                    ServerName
+
+
+

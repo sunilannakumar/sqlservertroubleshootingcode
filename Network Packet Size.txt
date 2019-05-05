@@ -1,0 +1,7 @@
+
+
+http://www.sqlsoldier.com/wp/sqlserver/networkpacketsizetofiddlewithornottofiddlewith
+
+http://microsoft-ssis.blogspot.in/2013/04/performance-best-practice-network.html
+
+http://sqlconsultant.wordpress.com/2010/08/15/sql-server-tds-or-network-packet-size/

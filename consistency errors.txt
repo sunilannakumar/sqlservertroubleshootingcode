@@ -1,0 +1,335 @@
+sp_configure ‘allow’ ,1
+GO
+Reconfigure with override
+GO
+Update sysdatabases set status = 32768 where name = 'msdb'
+GO
+sp_configure 'allow', 0
+GO
+Reconfigure with override
+go
+
+
+alter database msdb set EMERGENCY
+
+ALTER DATABASE msdb 
+SET single_user 
+
+DBCC CHECKDB('msdb', REPAIR_ALLOW_DATA_LOSS)
+
+BACKUP LOG msdb WITH TRUNCATE_ONLY 
+
+DBCC DBREINDEX (backupmediafamily, '', 70)
+
+DBCC CHECKDB ('msdb', 'repair_rebuild')
+
+dbcc checkdb
+
+
+
+ALTER DATABASE msdb SET RECOVERY full;
+
+DBCC CHECKTABLE ("backupmediafamily") WITH REPAIR_REBUILD;
+
+
+
+sp_configure "allow updates", 1
+ go
+
+ begin tran
+ go
+
+ use master
+ go
+
+update sysdatabases set status=0 
+ where name='msdb'
+ go
+
+
+commit tran
+
+
+ALTER DATABASE msdb SET single_user  
+
+ALTER DATABASE msdb SET multi_user 
+GO  
+DBCC CHECKDB ('msdb', REPAIR_ALLOW_DATA_LOSS)
+
+DBCC CHECKDB ('msdb', 'repair_rebuild')
+
+
+dbcc CHECKDB('msdb')
+
+
+DBCC CHECKTABLE ('sysjobhistory') WITH REPAIR_REBUILD;
+
+
+DBCC CHECKTABLE ('sysdbmaintplan_history') WITH NO_INFOMSGS 
+
+USE MASTER
+GO
+sp_CONFIGURE 'allow updates', 1
+RECONFIGURE WITH OVERRIDE
+
+
+
+BEGIN
+UPDATE sysdatabases
+SET status = 32768
+WHERE name = 'msdb'
+
+select * from sysdatabases
+
+sp_helpdb
+
+DBCC TRACEON (3604)
+DBCC REBUILD_LOG(GeorgeWImpey_NRD_Staging,'E:\Program Files\Microsoft SQL Server\MSSQL\Data\GeorgeWimpey_NRD_Staging_Log.ldf ')
+
+
+
+sp_RESETSTATUS msdb
+
+USE MASTER
+GO
+sp_CONFIGURE 'allow updates',0
+RECONFIGURE WITH OVERRIDE
+
+
+SELECT *
+FROM sysdatabases
+WHERE name = 'msdb'
+
+
+sp_DBOPTION 'msdb', 'single user','true'
+
+__________
+
+
+USE [master]
+GO
+ALTER DATABASE GeorgeWimpey_NRD SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+GO
+ALTER DATABASE GeorgeWimpey_NRD SET SINGLE_USER
+GO
+DBCC CHECKDB (GeorgeWimpey_NRD, REPAIR_FAST) WITH ALL_ERRORMSGS, NO_INFOMSGS
+GO
+ALTER DATABASE GeorgeWimpey_NRD SET MULTI_USER
+GO
+
+select * from sysdatabases
+
+
+DBCC CHECKTABLE ('sysindexes', repair_rebuild) 
+
+
+select * from sysobjects
+
+
+________________________
+
+dbcc checkdb
+
+alter database msdb set single_user
+
+backup database msdb to disk='E:\backups\msdb.bak'
+
+backup database msdb
+
+
+
+sp_resetstatus 'GeorgeWImpey_NRD_Staging'
+
+
+alter database GeorgeWImpey_NRD_Staging set EMERGENCY
+
+select * from sysaltfiles
+
+
+select * from sysdatabases
+
+
+
+sp_configure 'allow' ,1
+GO
+Reconfigure with override
+GO
+Update sysdatabases set status = 32768 where name = 'GeorgeWimpey_NRD'
+GO
+sp_configure 'allow', 0
+GO
+Reconfigure with override
+go
+
+32768
+
+select * from sysdatabases
+
+
+select * from sysaltfiles
+
+
+ALTER DATABASE GeorgeWimpey_NRD SET single_user with rollback immediate
+
+
+DBCC CHECKDB('GeorgeWimpey_NRD', REPAIR_ALLOW_DATA_LOSS)
+
+ALTER DATABASE GeorgeWimpey_NRD SET single_user 
+
+ALTER DATABASE GeorgeWimpey_NRD SET multi_user 
+
+
+DBCC CHECKDB ('GeorgeWimpey_NRD', 'REPAIR_ALLOW_DATA_LOSS')
+
+dbcc CHECKDB('GeorgeWimpey_NRD')
+
+DBCC CHECKDB ('GeorgeWimpey_NRD' /*,REPAIR_REBUILD*/)
+WITH NO_INFOMSGS, ALL_ERRORMSGS, DATA_PURITY
+
+
+
+
+DBCC TRACEON (3604)
+DBCC REBUILD_LOG(GeorgeWimpey_NRD,'E:\Program Files\Microsoft SQL Server\MSSQL\Data\GeorgeWimpey_NRD_log.LDF')
+
+
+select * from sysdatabases
+
+GeorgeWimpey_NRD
+
+GeorgeWImpey_NRD_Staging
+
+SELECT DATABASEPROPERTYEX('GeorgeWimpey_NRD', 'IsTornPageDetectionEnabled')
+
+
+ALTER DATABASE GeorgeWimpey_NRD SET TORN_PAGE_DETECTION OFF
+
+
+DBcc CheckDB ('GeorgeWimpey_NRD') with all_errormsgs
+
+
+DBCC PAGE (7,1,790)
+
+select @@servername
+
+
+BACKUP DATABASE GeorgeWimpey_NRD
+TO DISK='E:\backups\GeorgeWimpey_NRD.bak',
+
+__________________________
+
+
+sp_configure ‘allow’ ,1
+GO
+Reconfigure with override
+GO
+Update sysdatabases set status = 32768 where name = 'msdb'
+GO
+sp_configure 'allow', 0
+GO
+Reconfigure with override
+go
+
+
+alter database msdb set EMERGENCY
+
+ALTER DATABASE msdb 
+SET single_user 
+
+DBCC CHECKDB('msdb', REPAIR_ALLOW_DATA_LOSS)
+
+BACKUP LOG msdb WITH TRUNCATE_ONLY 
+
+DBCC DBREINDEX (backupmediafamily, '', 70)
+
+DBCC CHECKDB ('msdb', 'repair_rebuild')
+
+dbcc checkdb
+
+
+
+ALTER DATABASE msdb SET RECOVERY full;
+
+DBCC CHECKTABLE ("backupmediafamily") WITH REPAIR_REBUILD;
+
+
+
+sp_configure "allow updates", 1
+ go
+
+ begin tran
+ go
+
+ use master
+ go
+
+update sysdatabases set status=0 
+ where name='msdb'
+ go
+
+
+commit tran
+
+
+ALTER DATABASE msdb SET single_user  
+
+ALTER DATABASE msdb SET multi_user 
+GO  
+DBCC CHECKDB ('msdb', REPAIR_ALLOW_DATA_LOSS)
+
+DBCC CHECKDB ('msdb', 'repair_rebuild')
+
+
+dbcc CHECKDB('msdb')
+
+
+DBCC CHECKTABLE ('sysjobhistory') WITH REPAIR_REBUILD;
+
+
+DBCC CHECKTABLE ('sysdbmaintplan_history') WITH NO_INFOMSGS 
+
+USE MASTER
+GO
+sp_CONFIGURE 'allow updates', 1
+RECONFIGURE WITH OVERRIDE
+
+
+
+BEGIN
+UPDATE sysdatabases
+SET status = 32768
+WHERE name = 'msdb'
+
+select * from sysdatabases
+
+sp_helpdb
+
+DBCC TRACEON (3604)
+DBCC REBUILD_LOG(GeorgeWImpey_NRD_Staging,'E:\Program Files\Microsoft SQL Server\MSSQL\Data\GeorgeWimpey_NRD_Staging_Log.ldf ')
+
+
+
+sp_RESETSTATUS msdb
+
+USE MASTER
+GO
+sp_CONFIGURE 'allow updates',0
+RECONFIGURE WITH OVERRIDE
+
+
+SELECT *
+FROM sysdatabases
+WHERE name = 'msdb'
+
+
+sp_DBOPTION 'msdb', 'single user','true'
+
+
+
+
+
+
+
+
+
+

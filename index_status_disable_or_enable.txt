@@ -1,0 +1,9 @@
+-- Query to check Index Usage 
+SELECT NAME AS [IndexName], TYPE_DESC AS [IndexType], 
+CASE IS_DISABLED  
+WHEN 0 THEN 'Enabled' 
+ELSE 'Disabled'  
+END AS [IndexUsage],  
+FILL_FACTOR AS [FillFactor] FROM SYS.INDEXES 
+WHERE OBJECT_ID = OBJECT_ID('Person.Address') ORDER BY IndexName, IndexUsage 
+GO

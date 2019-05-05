@@ -1,0 +1,18 @@
+BUFFERCOUNT specifies the number of IO buffers that SQL Server allocates to the backup process. The default value is determined by the number of data volumes and the number of backup devices
+
+The MAXTRANSFERSIZE specifies, in bytes, the largest unit of transfer between SQL Server and your backup device. The default is 1 MB
+
+
+
+
+BACKUP DATABASE abc TO DISK = 'c:\temp\abc.bak' WITH COMPRESSION, BUFFERCOUNT = 50
+
+
+
+BACKUP DATABASE [MyDatabase] TO
+DISK = N'F:\myServer_backup\MyDatabase_backup_1of2.bak' , 
+DISK = N'F:\myServer_backup2\MyDatabase_backup_2of2.bak'
+WITH INIT 
+, COMPRESSION 
+, MAXTRANSFERSIZE=2097152 
+GO

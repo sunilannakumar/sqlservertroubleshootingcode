@@ -1,0 +1,52 @@
+
+SQL 2005 -Tables with primary keys
+-----------------------------------------------------------------
+
+SELECT c.name, b.name, a.name  
+FROM sys.key_constraints a  
+INNER JOIN sys.tables b ON a.parent_object_id = b.OBJECT_ID  
+INNER JOIN sys.schemas c ON a.schema_id = c.schema_id  
+WHERE a.type = 'PK'
+
+SQL 2000 -Tables with primary keys
+-----------------------------------------------------------------
+
+
+SELECT c.name, a.name, b.name 
+FROM sysobjects a 
+INNER JOIN sysindexes b ON a.id = b.id 
+INNER JOIN sysusers c ON a.uid = c.uid 
+WHERE (b.status & 2048)<>0
+
+
+SQL 2005- Tables without primary keys
+------------------------------------------
+
+SELECT c.name, b.name  
+FROM sys.tables b  
+INNER JOIN sys.schemas c ON b.schema_id = c.schema_id  
+WHERE b.type = 'U'  
+AND NOT EXISTS 
+(SELECT a.name  
+FROM sys.key_constraints a  
+WHERE a.parent_object_id = b.OBJECT_ID  
+AND a.schema_id = c.schema_id  
+AND a.type = 'PK' )
+
+
+SQL 2000- Tables without primary keys
+------------------------------------------
+
+SELECT c.name, a.name 
+FROM sysobjects a 
+INNER JOIN sysusers c ON a.uid = c.uid 
+WHERE xtype = 'U' 
+AND NOT EXISTS 
+(SELECT b.name 
+FROM sysindexes b 
+WHERE a.id = b.id 
+AND (b.status & 2048)<>0)
+
+
+
+

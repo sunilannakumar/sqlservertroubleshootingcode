@@ -1,0 +1,14 @@
+Upgrading an instance of the SQL Server 2000 Database Engine to a newer version retains the configuration value for max worker threads.
+
+SQL Server 2008 instance with 8 processors will create 576 worker threads but in sp_configure it is hardcoded to 128 threads which caused contention in this case.
+
+So we then changed this value to
+
+EXEC sp_configure 'max worker threads',0
+
+RECONFIGURE WITH  OVERRIDE
+
+and restarted instance, now we longer have the 18056 error.
+
+
+note :-http://blogs.msdn.com/b/sqlsakthi/archive/2011/07/06/error-18056-state-29-the-client-was-unable-to-reuse-a-session-the-failure-id-is-29-after-upgrading-sql-2000-to-sql-2008-sp2.aspx

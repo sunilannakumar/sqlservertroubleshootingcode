@@ -1,0 +1,1 @@
+start /wait D:\software\sql2005\1_32\setup.exe /qb INSTANCENAME=TLS_PROXY REINSTALL=SQL_Engine REBUILDDATABASE=1 SAPWD=Tlspass@123 SQLCOLLATION=Latin1_General_CI_AS

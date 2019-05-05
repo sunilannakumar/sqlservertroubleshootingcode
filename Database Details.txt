@@ -1,0 +1,104 @@
+
+db backups status
+----------------------
+
+SELECT sdb.Name AS DatabaseName,
+COALESCE(CONVERT(VARCHAR(12), MAX(bus.backup_finish_date), 101),'-') AS LastBackUpTime
+FROM sys.sysdatabases sdb
+LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
+GROUP BY sdb.Name
+Database details
+-------------------
+
+
+SELECT name,compatibility_level,is_read_only,recovery_model_desc,state_desc  FROM sys.databases
+
+
+Database details
+-------------------
+
+SELECT name,cmptlevel,DATABASEPROPERTYEX(name,'Recovery')AS RecoveryModel, 
+DATABASEPROPERTYEX(name,'Status') as Status FROM sysdatabases
+
+
+auto_close / auto_shrink
+---------------------------
+SELECT [name] AS DatabaseName
+, CONVERT(varchar(10),DATABASEPROPERTYEX([Name] , 'IsAutoClose')) AS AutoClose
+, CONVERT(varchar(10),DATABASEPROPERTYEX([Name] , 'IsAutoShrink')) AS AutoShrink
+FROM master.dbo.sysdatabases
+Order By DatabaseName
+
+
+file groups
+-----------
+
+EXEC master.dbo.sp_MSforeachdb @command1 = 'USE [?] SELECT * FROM sys.filegroups'
+
+
+
+
+
+
+
+
+
+Database details
+-------------------
+
+
+SELECT name,compatibility_level,recovery_model_desc,state_desc  FROM sys.databases
+
+
+Database details
+-------------------
+
+SELECT name,cmptlevel,DATABASEPROPERTYEX(name,'Recovery')AS RecoveryModel, 
+DATABASEPROPERTYEX(name,'Status') as Status FROM sysdatabases
+
+file groups
+-----------
+
+EXEC master.dbo.sp_MSforeachdb @command1 = 'USE [?] SELECT * FROM sys.filegroups'
+
+
+auto_close / auto_shrink
+---------------------------
+SELECT [name] AS DatabaseName
+, CONVERT(varchar(10),DATABASEPROPERTYEX([Name] , 'IsAutoClose')) AS AutoClose
+, CONVERT(varchar(10),DATABASEPROPERTYEX([Name] , 'IsAutoShrink')) AS AutoShrink
+FROM master.dbo.sysdatabases
+Order By DatabaseName
+
+
+db backups status
+----------------------
+
+SELECT sdb.Name AS DatabaseName,
+COALESCE(CONVERT(VARCHAR(12), MAX(bus.backup_finish_date), 101),'-') AS LastBackUpTime
+FROM sys.sysdatabases sdb
+LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
+GROUP BY sdb.Name
+
+
+-------------------------
+
+
+SELECT a.name, b.type, MAX(b.backup_finish_date) LastSuccessfulBackup,
+CAST((GETDATE() - MAX(b.backup_finish_date)) AS NUMERIC(5, 2)) IntervalInDays
+FROM master..sysdatabases a
+
+LEFT OUTER JOIN msdb..backupset b ON a.name = b.database_name
+GROUP BY a.name, b.type
+
+ORDER BY a.name, b.type
+
+
+---------------------
+
+select @@servername
+select @@VERSION
+select * from sys.dm_os_cluster_nodes
+select SERVERPROPERTY('productlevel')
+select * from sys.dm_os_sys_info
+select serverproperty('isclustered')

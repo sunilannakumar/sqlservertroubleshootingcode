@@ -1,0 +1,18 @@
+SUN
+  On GWAMCTS001 or GWAMCTS002.
+ 1. Select Control Panel
+ 2. Select Adminitsrative Tools
+ 3. Select Data Sources (ODBC)
+ 4. Select the System DSN tab.
+ 5. Click on Add...
+ 6. Select SQL Server and then click on Finish.
+ 7. Enter sundbSL for the name
+ 8. Enter sundbSL for the description
+ 9. Enter TWIBFIN for the server
+10. Select "With SQL Server authentication ..."
+11. Enter SUN for the Login ID.
+12. Enter EASTF1FE55 for the password.
+13. Click on "Next >".
+14. Select "Change the default database to".
+15. Enter sundbSL for the database.
+16. Click on "Next >". The error message now appears.

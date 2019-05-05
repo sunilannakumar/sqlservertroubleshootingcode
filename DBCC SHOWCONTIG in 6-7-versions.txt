@@ -1,0 +1,11 @@
+USE pubs
+GO
+DECLARE @id	INT
+SELECT @id = object_id('authors')
+DBCC SHOWCONTIG(@id)
+GO
+
+
+
+DBCC DBREINDEX (TableName, '', 80)
+DBCC UPDATEUSAGE (DatabaseName, 'TableName')

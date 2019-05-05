@@ -1,0 +1,44 @@
+select 
+convert (varchar(50),(estimated_completion_time/3600000))+'hrs'+
+convert (varchar(50), ((estimated_completion_time%3600000)/60000))+'min'+
+convert (varchar(50), (((estimated_completion_time%3600000)%60000)/1000))+'sec'
+as Estimated_Completion_Time, 
+status, command, db_name(database_id), percent_complete
+from sys.dm_exec_requests
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------
+
+
+SELECT servername = @@SERVERNAME, 
+ der.session_id, 
+ der.start_time, 
+ der.[status], 
+ der.percent_complete, 
+ dbname = Db_name(der.database_id), 
+ der.last_wait_type, 
+ der.blocking_session_id, 
+ runningsince=Datediff(MINUTE, der.start_time, Getdate()), 
+ runningforanother = CASE percent_complete 
+ WHEN 0 THEN 0 
+ ELSE ( ( ( Datediff(MINUTE, start_time, Getdate()) 
+ * 100 ) 
+ / percent_complete ) - ( 
+ Datediff(MINUTE, start_time, Getdate( 
+ )) ) ) 
+ END, 
+ der.command, 
+ st.[text] 
+FROM sys.dm_exec_requests der 
+ CROSS APPLY sys.dm_exec_sql_text(der.sql_handle) st 
+WHERE session_id > 50 
+ AND session_id <> @@SPID
+

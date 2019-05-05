@@ -1,0 +1,22 @@
+1. Save this as C:\PingSQL.bat
+2. Create and save SQLServers.txt file with your Server Names.
+3. Double click on PingSQL.bat file.
+4. Depending on the number of servers, the results file might take a while.
+
+5. You could view your results in C:\PingResults.txt file.
+
+
+---------------------------------------------
+
+
+
+:: PingSQL.bat
+@echo off
+for /f "tokens=*" %%I in (C:\SQLServers.txt) do call :results %%I
+
+goto :eof
+:results
+echo %TIME% >> C:\PingResults.txt
+ping %1 >> PingResults.txt
+:: DONE
+

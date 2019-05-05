@@ -1,0 +1,26 @@
+http://www.mssqltips.com/sqlservertip/1584/auto-generate-sql-server-restore-script-from-backup-files-in-a-directory/
+
+
+
+http://www.mssqltips.com/sqlservertip/1243/auto-generate-sql-server-database-restore-scripts/
+
+
+
+EXEC sp_configure 'show advanced options', 1
+
+GO
+RECONFIGURE
+
+GO
+
+EXEC sp_configure 'xp_cmdshell', 1
+
+GO
+
+RECONFIGURE
+
+
+-------------------
+
+dir /b > print.txt
+

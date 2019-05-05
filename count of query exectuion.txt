@@ -1,0 +1,67 @@
+
+for specific object
+----------------------------------------------------------
+
+SELECT cp.objtype AS PlanType,
+       OBJECT_NAME(st.objectid,st.dbid) AS ObjectName,
+       cp.refcounts AS ReferenceCounts,
+       cp.usecounts AS UseCounts,  -- UseCount 2
+       st.text AS SQLBatch,
+       qp.query_plan AS QueryPlan -- Check Query Plan it has SEEK
+FROM sys.dm_exec_cached_plans AS cp
+CROSS APPLY sys.dm_exec_query_plan(cp.plan_handle) AS qp 
+CROSS APPLY sys.dm_exec_sql_text(cp.plan_handle) AS st
+WHERE  OBJECT_NAME(st.objectid,st.dbid) = 'TESTSP';
+GO
+
+
+to collect all
+-------------------------------------------------------------
+
+
+SELECT cp.objtype AS PlanType,
+OBJECT_NAME(st.objectid,st.dbid) AS ObjectName,
+cp.refcounts AS ReferenceCounts,
+cp.usecounts AS UseCounts,
+st.TEXT AS SQLBatch,
+qp.query_plan AS QueryPlan
+FROM sys.dm_exec_cached_plans AS cp
+CROSS APPLY sys.dm_exec_query_plan(cp.plan_handle) AS qp
+CROSS APPLY sys.dm_exec_sql_text(cp.plan_handle) AS st;
+
+
+
+<QueryPlan CachedPlanSize="8" CompileTime="0" CompileCPU="0" CompileMemory="72">
+            <MemoryGrantInfo SerialRequiredMemory="0" SerialDesiredMemory="0" />
+            <OptimizerHardwareDependentProperties EstimatedAvailableMemoryGrant="40960" EstimatedPagesCached="5235" EstimatedAvailableDegreeOfParallelism="2" />
+            <RelOp NodeId="0" PhysicalOp="Index Seek" LogicalOp="Index Seek" EstimateRows="5929" EstimateIO="0.0142162" EstimateCPU="0.0066789" AvgRowSize="14" EstimatedTotalSubtreeCost="0.0208951" TableCardinality="5939" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+
+
+
+
+
+---------------------------------------------------------
+
+/* Test 0 */
+/* Clean Cache and Buffers */
+DBCC FREEPROCCACHE
+DBCC DROPCLEANBUFFERS
+GO
+USE AdventureWorks
+GO
+/* Run Adhoc Query First Time */
+SELECT * FROM HumanResources.Shift
+GO
+/* Check if Adhoc query is cached.
+It will return one result */
+SELECT usecounts, cacheobjtype, objtype, TEXT
+FROM sys.dm_exec_cached_plans
+CROSS APPLY sys.dm_exec_sql_text(plan_handle)
+WHERE usecounts > 0 AND
+TEXT LIKE '%SELECT * FROM HumanResources.Shift%'
+ORDER BY usecounts DESC;
+GO
+
+
+note:- http://blog.sqlauthority.com/2009/03/21/sql-server-2008-optimize-for-ad-hoc-workloads-advance-performance-optimization/
+			

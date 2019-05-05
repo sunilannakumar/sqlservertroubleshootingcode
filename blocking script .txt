@@ -1,0 +1,94 @@
+SELECT SPID=p.spid, 
+
+       DBName = convert(CHAR(20),d.name), 
+
+       ProgramName = program_name, 
+
+       LoginName = convert(CHAR(20),l.name), 
+
+       HostName = convert(CHAR(20),hostname), 
+
+       Status = p.status, 
+
+       BlockedBy = p.blocked, 
+
+       LoginTime = login_time, 
+
+       QUERY = CAST(TEXT AS VARCHAR(MAX)) 
+
+FROM   MASTER.dbo.sysprocesses p 
+
+       INNER JOIN MASTER.dbo.sysdatabases d 
+
+         ON p.dbid = d.dbid 
+
+       INNER JOIN MASTER.dbo.syslogins l 
+
+         ON p.sid = l.sid 
+
+       CROSS APPLY sys.dm_exec_sql_text(sql_handle) 
+
+WHERE  p.blocked = 0 
+
+       AND EXISTS (SELECT 1 
+
+                   FROM   MASTER..sysprocesses p1 
+
+                   WHERE  p1.blocked = p.spid)
+
+
+_____________________________________________________
+
+
+
+
+SELECT SPID=p.spid, 
+
+       DBName = convert(CHAR(20),d.name), 
+
+       LoginName = convert(CHAR(20),l.name), 
+
+       HostName = convert(CHAR(20),hostname), 
+
+       BlockedBy = p.blocked, 
+
+       LoginTime = login_time, 
+
+       QUERY = CAST(TEXT AS VARCHAR(MAX)) 
+
+FROM   MASTER.dbo.sysprocesses p 
+
+       INNER JOIN MASTER.dbo.sysdatabases d 
+
+         ON p.dbid = d.dbid 
+
+       INNER JOIN MASTER.dbo.syslogins l 
+
+         ON p.sid = l.sid 
+
+       CROSS APPLY sys.dm_exec_sql_text(sql_handle) 
+
+WHERE  p.blocked = 0 
+
+       AND EXISTS (SELECT 1 
+
+                   FROM   MASTER..sysprocesses p1 
+
+                   WHERE  p1.blocked = p.spid)
+________________________________________________________________________
+
+
+SELECT spid, status, loginame=SUBSTRING(loginame,
+1,12),hostname=substring(hostname, 1, 12),
+      blk=CONVERT(char(3), blocked),dbname=SUBSTRING(DB_NAME(dbid),
+1, 10), cmd, waittype
+FROM master.dbo.sysprocesses
+  WHERE spid IN (SELECT blocked FROM master.dbo.sysprocesses)
+
+
+__________________________________________________________________
+
+
+
+
+

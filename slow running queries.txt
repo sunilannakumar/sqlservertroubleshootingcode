@@ -1,0 +1,19 @@
+----------slow running queries------
+
+SELECT p.spid ,
+convert(char(12), d.name) db_name ,
+ program_name , 
+convert(char(12), l.name) login_name ,
+ convert(char(12), hostname) hostname , 
+cmd , 
+p.status ,
+ p.blocked ,
+ login_time ,
+ last_batch , 
+p.spid FROM master..sysprocesses p 
+JOIN master..sysdatabases d ON p.dbid =  d.dbid 
+JOIN  master..syslogins l ON p.sid = l.sid WHERE 
+ p.blocked = 0 AND EXISTS (  SELECT 1 FROM master..sysprocesses p2 WHERE p2.blocked = p.spid ) 
+
+
+---------end------

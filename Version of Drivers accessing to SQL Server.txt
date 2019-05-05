@@ -1,0 +1,39 @@
+
+You can run the following query to get a list of connections and their protocol version
+---------------------------------------------------------------------------------------
+
+
+select protocol_type, protocol_version,CONVERT(binary(4),protocol_version) 
+from sys.dm_exec_connections
+
+
+
+To make these eaiser to read, we can rewrite our query as follows to show the driver version.
+---------------------------------------------------------------------------------------
+
+
+SELECT session_id, protocol_type, driver_version = 
+CASE SUBSTRING(CAST(protocol_version AS BINARY(4)), 1,1)
+WHEN 0x70 THEN 'SQL Server 7.0'
+WHEN 0x71 THEN 'SQL Server 2000'
+WHEN 0x72 THEN 'SQL Server 2005'
+WHEN 0x73 THEN 'SQL Server 2008'
+ELSE 'Unknown driver' 
+END,client_net_address ,client_tcp_port,local_tcp_port ,T.text
+FROM sys.dm_exec_connections
+CROSS APPLY sys.dm_exec_sql_text(most_recent_sql_handle) AS T 
+
+
+
+SQL Server  	Client to Server 	Server to Client 
+--------------------------------------------------------
+7.0  		0x00000070 		0x07000000 
+2000  		0x00000071 		0x07010000 
+2000 SP1  	0x01000071 		0x71000001 
+2005  		0x02000972 		0x72090002 
+2008  		0x03000B73 		0x730B0003 
+
+
+
+http://www.mssqltips.com/sqlservertip/2198/determine-which-version-of-sql-server-data-access-driver-is-used-by-an-application/
+http://msdn.microsoft.com/en-us/library/dd339982.aspx

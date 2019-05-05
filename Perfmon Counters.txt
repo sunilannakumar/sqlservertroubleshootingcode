@@ -1,0 +1,1 @@
+http://msmvps.com/blogs/omar/archive/2007/09/19/a-significant-part-of-sql-server-process-memory-has-been-paged-out-this-may-result-in-performance-degradation.aspx

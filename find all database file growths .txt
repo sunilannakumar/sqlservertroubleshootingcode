@@ -1,0 +1,12 @@
+select DB_NAME(database_id) as Database_name,Name,growth,
+case is_percent_growth
+when 0 then 'In MB'
+when 1 then 'In Percent'
+end as Typeofgrowth,
+case max_size
+when 0 then 'Restricted'
+when -1 then 'Unrestricted'
+when 268435456 then 'Unrestricted'
+else convert(varchar(20),max_size/128)
+end as Maxsize
+ from sys.master_files 

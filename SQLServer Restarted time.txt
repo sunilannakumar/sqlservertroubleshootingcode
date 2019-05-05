@@ -1,0 +1,21 @@
+1) sp_readerrorlog 0,1,'Copyright (c)' 
+
+ 
+
+2) SELECT sqlserver_start_time FROM sys.dm_os_sys_info; 
+
+ 
+
+3) SELECT login_time FROM sys.dm_exec_sessions WHERE session_id = 1; 
+
+ 
+
+4) select start_time from sys.traces where is_default = 1 
+
+ 
+
+5) SELECT crdate FROM sysdatabases WHERE name='tempdb' 
+
+ 
+
+6) SELECT create_date FROM sys.databases WHERE name = 'tempdb'

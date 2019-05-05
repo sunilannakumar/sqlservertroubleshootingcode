@@ -1,0 +1,55 @@
+* record the file locations 
+------------------------------
+use mydb
+   go
+   sp_helpfile
+   go
+
+move database to single user mode
+------------------------------------
+
+alter database Dbname set single_user with rollback immediate
+
+Detach databse
+--------------
+
+use master
+   go
+   sp_detach_db 'mydb'
+   go
+__________
+
+
+
+move the database files manually.
+
+
+
+attached database again 
+----------------------
+
+use master
+  go
+  sp_attach_db 'mydb','E:\Sqldata\mydbdata.mdf','E:\Sqldata\mydblog.ldf'
+  go
+
+________________
+
+use mydb
+   go
+   sp_helpfile
+   go
+
+
+-------------------------------------------------------------------------------------------------------------
+
+ALTER DATABASE database_name SET OFFLINE;
+
+ALTER DATABASE database_name MODIFY FILE ( NAME = logical_name, FILENAME = 'new_path\os_file_name' );
+
+ALTER DATABASE database_name SET ONLINE;
+
+
+SELECT name, physical_name AS CurrentLocation, state_desc
+FROM sys.master_files
+WHERE database_id = DB_ID(N'<database_name>');

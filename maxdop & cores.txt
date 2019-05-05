@@ -1,0 +1,19 @@
+SELECT
+     [value_in_use] AS [MAXDOP],
+     os.*
+ FROM
+     sys.configurations,
+     (SELECT
+         COUNT (DISTINCT [parent_node_id]) AS [Nodes],
+         COUNT (*) AS [Cores]
+      FROM
+         sys.dm_os_schedulers 
+      WHERE
+         [status] = 'VISIBLE ONLINE') AS os
+ WHERE
+     [name] = 'max degree of parallelism';
+ GO 
+
+
+
+http://blogs.msdn.com/b/sqlserverfaq/archive/2009/01/05/why-do-i-see-more-threads-per-spid-in-sysprocesses-than-maxdop.aspx

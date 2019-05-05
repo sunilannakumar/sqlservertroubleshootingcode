@@ -1,0 +1,39 @@
+Stop logging all successful backups in your SQL Server error logs
+----------------------------------------------------------------
+
+3226 (Turn on manually) :-
+
+By default, every successful backup operation adds an entry in the SQL Server error log and in the system event log. 
+If you create very frequent log backups, these success messages accumulate quickly, 
+resulting in huge error logs in which finding other messages is problematic. 
+With this trace flag, you can suppress these log entries.
+ This is useful if you are running frequent log backups and if none of your scripts depend on those entries
+
+
+turn off : DBCC TRACEOFF (3226, -1)
+
+To display Trace Flags which are enabled in current session + globally enabled Trace Flags
+
+DBCC TRACESTATUS(-1)
+
+GO
+
+DBCC TRACESTATUS()
+
+GO
+
+To display status of individual Trace Flags which are enabled.
+
+DBCC TRACESTATUS(3023, 3604)
+
+GO
+
+
+Allows SQL Server 2005 to use large page allocations for the memory allocated for the buffer pool
+---------------------------------------------------------------------------------------------
+
+Trace Flag 834 --we can enable this only from Startp using -g
+
+
+Dead Locks
+

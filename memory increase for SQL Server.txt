@@ -1,0 +1,11 @@
+DBCC MEMORYSTATUS
+
+
+--------------
+sp_configure 'show advanced options',1 
+reconfigure with override 
+go
+
+sp_configure 'max server memory', 2868
+go
+sp_configure 'show advanced options',0

@@ -1,0 +1,8 @@
+SELECT @@ServerName AS server
+ ,NAME AS dbname
+ ,COUNT(STATUS) AS number_of_connections
+ ,GETDATE() AS timestamp
+FROM sys.databases sd
+LEFT JOIN sysprocesses sp ON sd.database_id = sp.dbid
+WHERE database_id NOT BETWEEN 1 AND 4
+GROUP BY NAME

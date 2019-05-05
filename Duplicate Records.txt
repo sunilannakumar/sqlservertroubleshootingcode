@@ -1,0 +1,5 @@
+SELECT YourColumn, COUNT(*) TotalCount
+FROM YourTable
+GROUP BY YourColumn
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC

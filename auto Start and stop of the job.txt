@@ -1,0 +1,103 @@
+-------------------------------------------
+auto stop of the job
+-------------------------------------------
+
+
+declare @jobName varchar(50)
+declare @jobID uniqueidentifier 
+declare @jobState int
+
+SET @jobName = 'IUSDS4-CDALIVE-CDALIVE_TO_GATEWAY_ME-S300025-14'
+
+select top 1 @jobID = job_id from dbo.sysjobs
+where name = @jobName
+      
+CREATE TABLE #xp_results (job_id  UNIQUEIDENTIFIER NOT NULL,
+            last_run_date         INT              NOT NULL,
+            last_run_time         INT              NOT NULL,
+            next_run_date         INT              NOT NULL,
+            next_run_time         INT              NOT NULL,
+            next_run_schedule_id  INT              NOT NULL,
+            requested_to_run      INT              NOT NULL, -- BOOL
+            request_source        INT              NOT NULL,
+            request_source_id     sysname          collate database_default
+null,
+            running               INT              NOT NULL, -- BOOL
+            current_step          INT              NOT NULL,
+            current_retry_attempt INT              NOT NULL,
+            job_state             INT              NOT NULL)
+
+INSERT INTO #xp_results
+EXECUTE master.dbo.xp_sqlagent_enum_jobs 1, 'dbo'
+
+SELECT @jobState = job_state FROM #xp_results WHERE job_id = @JobID
+
+DROP TABLE #xp_results
+
+if @JobState = 1 --JOB IS RUNNING, SO STOP IT
+begin 
+      exec msdb..sp_stop_job null, @jobID
+end
+
+
+
+----------------------------------------------------------
+auto Start of job
+--------------------------------------------------------------
+
+declare @jobName varchar(50)
+declare @jobID uniqueidentifier 
+declare @jobState int
+
+SET @jobName = 'S300025-CDMS-1'
+
+select top 1 @jobID = job_id from dbo.sysjobs
+where name = @jobName
+      
+CREATE TABLE #xp_results (job_id  UNIQUEIDENTIFIER NOT NULL,
+            last_run_date         INT              NOT NULL,
+            last_run_time         INT              NOT NULL,
+            next_run_date         INT              NOT NULL,
+            next_run_time         INT              NOT NULL,
+            next_run_schedule_id  INT              NOT NULL,
+            requested_to_run      INT              NOT NULL, -- BOOL
+            request_source        INT              NOT NULL,
+            request_source_id     sysname          collate database_default
+null,
+            running               INT              NOT NULL, -- BOOL
+            current_step          INT              NOT NULL,
+            current_retry_attempt INT              NOT NULL,
+            job_state             INT              NOT NULL)
+
+INSERT INTO #xp_results
+EXECUTE master.dbo.xp_sqlagent_enum_jobs 1, 'dbo'
+
+SELECT @jobState = job_state FROM #xp_results WHERE job_id = @JobID
+
+DROP TABLE #xp_results
+
+--0 = Not idle or suspended, 
+--1 Executing.
+--2 Waiting for thread.
+--3 Between retries.
+--4 Idle.
+--5 Suspended.
+--7 Performing completion actions.
+
+if @JobState = 4 --JOB NOT RUNNING, SO START IT
+begin 
+      exec msdb..sp_start_job null, @jobID
+end
+
+
+
+
+
+
+
+
+
+
+
+
+

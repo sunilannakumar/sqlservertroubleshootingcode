@@ -1,0 +1,4 @@
+use msdb
+go
+select s1.user_name,s1.database_name,s1.backup_finish_date,f1.physical_device_name from backupset s1 inner join backupmediafamily f1
+on f1.media_set_id=s1.media_set_id where f1.physical_device_name like 'd:\%' and user_name like 'AD03%'

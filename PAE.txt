@@ -1,0 +1,26 @@
+Windows XP/2003
+--------------
+
+PAE is enabled by default on Windows 2003 Server if more than 4GB of memory is installed.  To find out if PAE is enabled, look under the computer specifications in System Properties under the General tab. This can be seen in the picture below:
+
+
+Windows 7
+------------------
+
+1.Click on the Start menu
+2.In the new window, click on Control Panel
+3.In the new window, click on Administrative Tools
+4.Double-click Event Viewer
+5.In the left pane of the Event Viewer window, click on Event Viewer (Local) >> Windows Logs >> System
+6.In the menu bar, click on Action >> Find
+7.Type pae and click Find Next
+8.An event indicating "PAE detected" will be found if PAE is enabled.
+
+for 2008 Server
+------------------
+
+http://kb.funcshun.com/how-to-enable-pae-on-windows-server-2008-standard-32-bit/
+
+
+-------------
+boot.ini

@@ -1,0 +1,90 @@
+sp_who2
+sp_helpdb
+
+
+select cmd, spid,login_time,last_batch,dbid,nt_username,loginame,program_name 
+from sysprocesses where spid>50  order by last_batch
+
+
+
+
+select   cmd,* from sysprocesses 
+where cmd <> 'awaiting command'
+and spid > 50 order by last_batch 
+
+
+SELECT * FROM master..sysprocesses WHERE status = 'runnable' ORDER BY cpu desc
+
+
+
+declare @sql_handle varbinary(64)
+select @sql_handle = sql_handle from master..sysprocesses where spid=53
+select dbid, objectid, text from ::fn_get_sql(@sql_handle)
+
+
+
+
+select cmd,* from sysprocesses where blocked > 0
+
+
+
+sp_configure 
+sp_readerrorlog
+
+
+dbcc inputbuffer(152)
+
+
+
+Notes:-
+
+
+
+- No memory pressure reported.
+- No blocking available on the server.
+-log file is full 
+- There were lot of connection to DB 'CDALIVE' (around 235) and 10 of them were active.
+- The active connections were doing SELECT, UPDATE and INSERT operation and none running for long time.
+- Nothing to highlight from the SQL sever error log and no dumps created.
+- any jobs are running.
+
+- We will monitor the server and update on any issues.
+
+
+------- running processess-----
+
+select r.session_id,
+    r.start_time,
+    db = db_name(database_id),
+    r.command,
+    st.text,
+    substring(st.text,
+        r.statement_start_offset/2+1,
+        (case when r.statement_end_offset = -1
+              then len(convert(nvarchar(max), st.text)) * 2
+              else r.statement_end_offset end -
+         r.statement_start_offset)/2+1),
+    r.blocking_session_id,
+    r.wait_type,
+    r.last_wait_type,
+    r.cpu_time,
+    r.total_elapsed_time,
+    r.reads,
+    r.writes,
+    s.memory_usage,
+    s.host_name,
+    s.program_name,
+    s.login_name
+from sys.dm_exec_requests r
+join sys.dm_exec_connections c on r.session_id = c.session_id 
+join sys.dm_exec_sessions s on s.session_id = r.session_id 
+cross apply sys.dm_exec_sql_text(r.sql_handle) st 
+where r.session_id > 50
+order by r.session_id
+
+
+------end---------
+
+
+
+

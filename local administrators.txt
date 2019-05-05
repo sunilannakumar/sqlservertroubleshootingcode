@@ -1,0 +1,17 @@
+c:\>net localgroup administrators > R:\Credentials.txt
+
+________________________________________
+
+sp_helprolemember
+___________________________________
+
+
+select name,dbname,hasaccess,isntgroup,isntuser,sysadmin,securityadmin,serveradmin,setupadmin,processadmin
+,diskadmin
+,dbcreator
+ from syslogins where sysadmin=1
+
+
+
+
+   xp_logininfo 'BUILTIN\Administrators',members

@@ -1,0 +1,6 @@
+dbcc sqlperf('logspace')
+
+backup database SiteStreamTEMP to disk='F:\SQL BACKUPS\SitestreamTemp\INC000002841163.bak'
+
+
+backup log SiteStreamTEMP to disk='F:\SQL BACKUPS\SitestreamTemp\INC000002841163.trn'

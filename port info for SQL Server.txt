@@ -1,0 +1,19 @@
+declare @Server as varchar(128) 
+declare @Version as varchar (512) 
+declare @PortNumber as varchar(8) 
+
+set @Server = @@ServerName 
+set @Version = left(@@Version, 38) 
+
+exec xp_regread 
+	@rootkey = 'HKEY_LOCAL_MACHINE', 
+	@key = 'SOFTWARE\MICROSOFT\MSSQLSERVER\MSSQLSERVER\SUPERSOCKETNETLIB\TCP', 
+	@value_name = 'TcpPort', 
+	@value = @PortNumber output 
+
+If @PortNumber <> '1433' 
+	begin 
+		print '*****server: ' + @server + ' is running on port ' + cast(@PortNumber as varchar) + '. Server is: ' + @Version 
+	end 
+	else print 'server: ' + @server + ' is running on port ' + cast(@PortNumber as varchar) + '. Server is: ' + @Version
+

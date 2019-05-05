@@ -1,0 +1,9 @@
+SELECT	db_name() AS [Database Name],
+	T.[name] AS [TableName],
+	TR.[Name] AS [TriggerName],
+	[Status] = CASE WHEN OBJECTPROPERTY(TR.[id], 'ExecIsTriggerDisabled') = 1
+		THEN 'Disabled' ELSE 'Enabled' END
+FROM	sysobjects T
+JOIN	sysobjects TR ON t.[ID] = TR.[parent_obj]
+WHERE	T.[xtype] = 'U'
+	AND TR.[xtype] = 'TR'

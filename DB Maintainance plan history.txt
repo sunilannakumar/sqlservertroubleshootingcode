@@ -1,0 +1,2 @@
+select database_name, activity, start_time, message
+from msdb..sysdbmaintplan_history order by start_time desc

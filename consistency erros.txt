@@ -1,0 +1,43 @@
+
+DBCC DBREINDEX ('TableName','Index_Name',fillfactor)
+
+DBCC DBREINDEX ('MapStudioFiles','PK_MapMakerFiles',80)
+EXEC sp_helpindex 'MapStudioFiles'
+
+ex;
+
+DBCC DBREINDEX (TableName, '', 70)
+
+
+alter database DataBaseName set single_user with rollback immediate
+
+
+DBCC CHECKDB ('DataBaseName', ‘repair_rebuild’).
+
+dbcc CHECKDB('DataBaseName')
+
+
+___________________________________
+
+
+USE DataBaseName
+GO
+DBCC CHECKTABLE ("TableName") WITH REPAIR_REBUILD;
+
+GO
+
+
+DBCC CHECKTABLE ("TableName") WITH NO_INFOMSGS 
+
+
+____________________________________________________
+
+DBCC UPDATEUSAGE (Respond, 'ViewDefn')
+DBCC UPDATEUSAGE (Respond, 'ExprGroup')
+DBCC UPDATEUSAGE (Respond, 'FolderPermission')
+
+
+sysjobhistory
+
+
+DBCC UPDATEUSAGE (msdb, 'sysjobhistory')

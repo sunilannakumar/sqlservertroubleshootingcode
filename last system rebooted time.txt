@@ -1,0 +1,39 @@
+net statistics workstation | find "Statistics since"
+
+
+
+systeminfo| find "System Boot Time"
+
+
+systeminfo| find "System Up Time"
+
+
+
+
+last SQL SERver restart time:
+------------------------------
+
+SELECT sqlserver_start_time FROM sys.dm_os_sys_info
+
+
+
+xp_readerrorlog 0, 1, N'SQL Server is Starting at', NULL, NULL, N'asc'
+
+
+1. Error log file number which you would like to read 
+   a. To read Current SQL Server Error Log specify value as 0 
+   b. To read Archive #1 SQL Server Error Log specify value as 1 
+   c. To read Archive #2 SQL Server Error Log specify value as 2 
+2. Specify whether you want to read SQL Server Error Log or SQL Server Agent Log 
+   a. To read SQL Server Error Log file specify value as either 1 or NULL 
+   b. To read SQL Server Agent log specify value as 2 
+3. Provide Search String 1: Specify Search String Criteria 
+4. Provide Search string 2: Specify Additional Search String Criteria 
+5. Provide Start Time for the Search 
+6. Provide End Time for the Search 
+7. Specify Sort order for the results 
+   a. Ascending = N'asc' 
+   b. Descending = N'desc' 
+
+
+

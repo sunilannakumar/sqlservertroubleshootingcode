@@ -1,0 +1,10 @@
+----Following script will recompile all the stored procedure on table Sales.Customer in AdventureWorks database.
+USE AdventureWorks;
+GO
+EXEC sp_recompile N'Sales.Customer';
+GO
+----Following script will recompile specific stored procedure uspGetBillOfMaterials only.
+USE AdventureWorks;
+GO
+EXEC sp_recompile 'uspGetBillOfMaterials';
+GO

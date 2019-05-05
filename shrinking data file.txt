@@ -1,0 +1,17 @@
+dbcc sqlperf(logspace)
+
+
+
+sp_helpdb
+
+dbcc sqlperf(logspace)
+
+DBCC loginfo  
+
+backup log sundbGW to disk='P:\sundbGWtrbackup.trn' 
+
+backup database sundbGW to disk='g:\sundbGWtrbackup.bak'
+
+
+
+DBCC SHRINKFILE (sundbLog ,2024);

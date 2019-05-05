@@ -1,0 +1,115 @@
+PhysicalDisk Object: Avg. Disk Queue 
+-----------------------------
+
+
+If your disk queue length frequently exceeds a value of 2 during peak usage of SQL Server, 
+you might have an I/O bottleneck
+
+
+
+Disk Sec/Read
+--------------
+
+ •Less than 10 ms - very good
+  •Between 10 - 20 ms - okay
+  •Between 20 - 50 ms - slow, needs attention
+  •Greater than 50 ms – Serious I/O bottleneck
+
+
+
+Physical Disk: %Disk Time :is the percentage of elapsed time
+------------------------
+
+ that the selected disk drive was busy servicing read or write requests.
+ A general guideline is that if this value is greater than 50 percent, there is an I/O bottleneck
+
+
+
+
+Avg. Disk Reads/Sec : is the rate of read operations on the disk
+--------------------
+
+Ensure that this number is less than 85 percent of the disk capacity. The disk access time increases exponentially beyond 85 percent capacity.
+
+
+Avg. Disk Writes/Sec : is the rate of write operations on the disk
+---------------------
+
+Ensure that this number is less than 85 percent of the disk capacity. 
+The disk access time increases exponentially beyond 85 percent capacity.
+ •Raid 0 -- I/Os per disk = (reads + writes) / number of disks
+ •Raid 1 -- I/Os per disk = [reads + (2 * writes)] / 2
+ •Raid 5 -- I/Os per disk = [reads + (4 * writes)] / number of disks
+ •Raid 10 -- I/Os per disk = [reads + (2 * writes)] / number of disks
+
+For example, you might have a RAID-1 system with two physical disks with the following values of the counters.
+Disk Reads/sec            80
+Disk Writes/sec           70
+Avg. Disk Queue Length    5
+
+
+In that case, you are encountering (80 + (2 * 70))/2 = 110 I/Os per disk and 
+your disk queue length = 5/2 = 2.5, which indicates a borderline I/O bottleneck
+
+
+
+When the I/O completes, the worker is placed in the runnable queue. The time between I/O completions until the time the worker is actually scheduled is accounted under the signal_wait_time_ms column. You can identify an I/O problem if your waiting_task_counts and wait_time_ms deviate significantly from what you see normally. For this, it is important to get a baseline of performance counters and key DMV query outputs when SQL Server is running smoothly. These wait_types can indicate whether your I/O subsystem is experiencing a bottleneck, but they do not provide any visibility on the physical disk(s) that are experiencing the problem.
+
+You can use the following DMV query to find currently pending I/O requests. You can execute this query periodically to check the health of I/O subsystem and to isolate physical disk(s) that are involved in the I/O bottlenecks.
+select
+    database_id,
+    file_id,
+    io_stall,
+    io_pending_ms_ticks,
+    scheduler_address
+from    sys.dm_io_virtual_file_stats(NULL, NULL)t1,
+        sys.dm_io_pending_io_requests as t2
+where    t1.file_handle = t2.io_handle
+
+A sample output follows. It shows that on a given database, there are three pending I/Os at this moment. You can use the database_id and file_id columns to find the physical disk the files are mapped to. The io_pending_ms_ticks values represent the total time individual I/Os are waiting in the pending queue.
+
+Database_id    File_Id io_stall    io_pending_ms_ticks    scheduler_address
+----------------------------------------------------------------------
+6        1        10804        78            0x0227A040
+6        1        10804        78            0x0227A040
+6        2        101451    31            0x02720040
+
+
+
+There are some useful Dynamic Management Views (DMVs) to check I/O bottlenecks.
+------------------------------------------------------------------------------
+
+---------------------------------
+select *
+from sys.dm_os_wait_stats  
+where wait_type like 'PAGEIOLATCH%'
+order by wait_type asc
+
+--------------------------------
+
+--------------------------------
+select database_id, 
+       file_id, 
+       io_stall,
+       io_pending_ms_ticks,
+       scheduler_address 
+from sys.dm_io_virtual_file_stats(NULL, NULL) iovfs,
+     sys.dm_io_pending_io_requests as iopior
+where iovfs.file_handle = iopior.io_handle
+--------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

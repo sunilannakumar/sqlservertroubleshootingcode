@@ -1,0 +1,6 @@
+http://sqldoctor.idera.com/recommendations/sdr-m1/lock-pages-memory-address-windowing-extensions-awe-32bit64bit-confused/
+
+http://www.gethynellis.com/2010/06/lock-pages-in-memory.html
+
+
+http://www.grumpyolddba.co.uk/2005Problems/Lock%20Pages%20in%20Memory%20for%20x64.htm

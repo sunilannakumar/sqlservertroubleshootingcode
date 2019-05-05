@@ -1,0 +1,25 @@
+Process to move database :
+----Step 1 : Detach Database using following script
+USE [master]
+GO
+EXEC master.dbo.sp_detach_db @dbname = N'AdventureWorks',
+@keepfulltextindexfile = N'true'
+GO
+----Step 2 : Move Data files and Log files to new location
+
+–—Step 3 : Attach Database using following script
+USE [master]
+GO
+CREATE DATABASE [AdventureWorks] ON
+( FILENAME = N’C:\Data\AdventureWorks_Data.mdf’ ),
+( FILENAME = N’C:\Data\AdventureWorks_Log.ldf’ )
+FOR ATTACH
+GO
+IF EXISTS ( SELECT name
+FROM master.sys.databases sd
+WHERE name = N’AdventureWorks’
+AND SUSER_SNAME(sd.owner_sid) = SUSER_SNAME() )
+EXEC [AdventureWorks].dbo.sp_changedbowner @loginame=N’sa’,
+@map=false
+GO
+

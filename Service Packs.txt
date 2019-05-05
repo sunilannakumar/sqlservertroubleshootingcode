@@ -1,0 +1,17 @@
+http://sqlserverbuilds.blogspot.in/
+
+
+http://support.microsoft.com/lifecycle/search/?sort=PN&alpha=SQL
+
+
+http://sqlserverversions.blogspot.in/
+
+
+
+http://support.microsoft.com/lifecycle/search/default.aspx?sort=PN&alpha=Windows+server&Filter=FilterNO
+
+
+http://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
+
+
+https://technet.microsoft.com/en-us/library/ff803383.aspx

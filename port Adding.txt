@@ -1,0 +1,3 @@
+http://blog.sqlauthority.com/2009/05/21/sql-server-fix-error-provider-named-pipes-provider-error-40-could-not-open-a-connection-to-sql-server-microsoft-sql-server-error/
+
+http://support.lexisnexis.com/us_en_us/record.asp?bRFS=1&ArticleID=10101
